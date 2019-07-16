@@ -1,0 +1,23 @@
+/*body {
+  background: rgba(247,176,52,1);
+background: -moz-linear-gradient(left, rgba(247,176,52,1) 0%, rgba(245,169,54,1) 25%, rgba(255,148,54,1) 48%, rgba(255,148,54,1) 74%, rgba(255,124,54,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(247,176,52,1)), color-stop(25%, rgba(245,169,54,1)), color-stop(48%, rgba(255,148,54,1)), color-stop(74%, rgba(255,148,54,1)), color-stop(100%, rgba(255,124,54,1)));
+background: -webkit-linear-gradient(left, rgba(247,176,52,1) 0%, rgba(245,169,54,1) 25%, rgba(255,148,54,1) 48%, rgba(255,148,54,1) 74%, rgba(255,124,54,1) 100%);
+background: -o-linear-gradient(left, rgba(247,176,52,1) 0%, rgba(245,169,54,1) 25%, rgba(255,148,54,1) 48%, rgba(255,148,54,1) 74%, rgba(255,124,54,1) 100%);
+background: -ms-linear-gradient(left, rgba(247,176,52,1) 0%, rgba(245,169,54,1) 25%, rgba(255,148,54,1) 48%, rgba(255,148,54,1) 74%, rgba(255,124,54,1) 100%);
+background: linear-gradient(to right, rgba(247,176,52,1) 0%, rgba(245,169,54,1) 25%, rgba(255,148,54,1) 48%, rgba(255,148,54,1) 74%, rgba(255,124,54,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7b034', endColorstr='#ff7c36', GradientType=1 );
+}
+*/
+body{
+  background: #000000;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #434343, #000000);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #434343, #000000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.logo {
+  width: 30%;
+}
+.logoJaveiriana{
+  width: 100px;
+  height: 100px;
+}
