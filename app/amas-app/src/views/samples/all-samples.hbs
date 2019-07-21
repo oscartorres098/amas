@@ -1,0 +1,32 @@
+  <select name="" id="">
+    <option value="value1">Modelo 1</option>
+    <option value="value1">Modelo 2</option>
+  </select>
+<div class="row">
+  {{#each samples}}
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title d-flex justify-content-between align-items-center">
+          {{ title }} <a href="/samples/edit-samples/{{_id}}"><i class="fas fa-edit"></i></a>
+        </h4>
+        <p>{{ description }}</p>
+        <!-- DELETE REQUEST -->
+        <form action="/notes/delete/{{_id}}?_method=DELETE" method="POST">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="btn btn-danger btn-block btn-sm">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {{else}}
+  <div class="card mx-auto">
+    <div class="card-body">
+      <h1>Hola {{user.name}}</h1>
+      <p clsss="lead">Aún no hay muestras.</p>
+      <input type="file">
+      <a href="" class="btn btn-success btn-block">Subir</a>
+    </div>
+  </div>
+  {{/each}}
+</div>

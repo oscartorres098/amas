@@ -4,11 +4,14 @@ const passport = require('passport');
 // Models
 const User = require('../models/User');
 
-router.get('/users/signup', (req, res) => {
+//helpers
+const { isAdmin } = require('../helpers/auth');
+
+router.get('/users/signup', isAdmin, (req, res) => {
   res.render('users/signup');
 });
 
-router.post('/users/signup', async (req, res) => {
+router.post('/users/signup',isAdmin, async (req, res) => {
   let errors = [];
   const { name, email, password, confirm_password, rol } = req.body;
   if(password != confirm_password) {
@@ -30,8 +33,8 @@ router.post('/users/signup', async (req, res) => {
       const newUser = new User({name, email, password, rol});
       newUser.password = await newUser.encryptPassword(password);
       await newUser.save();
-      req.flash('success_msg', 'You are registered.');
-      res.redirect('/users/signin');
+      req.flash('success_msg', 'Usuario Resgistrado.');
+      res.redirect('/users');
     }
   }
 });
@@ -41,15 +44,22 @@ router.get('/users/signin', (req, res) => {
 });
 
 router.post('/users/signin', passport.authenticate('local', {
-  successRedirect: '/notes',
+  successRedirect: '/samples',
   failureRedirect: '/users/signin',
   failureFlash: true
 }));
 
 router.get('/users/logout', (req, res) => {
   req.logout();
-  req.flash('success_msg', 'You are logged out now.');
+  req.flash('success_msg', 'Has cerrado sesion');
   res.redirect('/users/signin');
 });
+
+//Ver Usuarios
+router.get('/users', isAdmin, async (req, res) => {
+  const users = await User.find();
+  res.render('users/all-users', { users });
+});
+
 
 module.exports = router;

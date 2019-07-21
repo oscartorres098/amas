@@ -1,0 +1,9 @@
+<div class="list-group">
+  {{#each users}}
+    <a href="users/edit-user/{{user.id}}" class="list-group-item list-group-item-action ">    
+      {{name}}
+    </a>
+  {{/each}}
+</div>
+
+<a href="/users/signup" class="btn btn-success btn-block btn-sm">Crear usuario</a>

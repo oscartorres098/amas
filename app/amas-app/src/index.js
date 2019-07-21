@@ -16,6 +16,7 @@ app.set('port', process.env.PORT || 4000);
 app.set('views', path.join(__dirname, 'views'));
 app.engine('.hbs', exphbs({
   defaultLayout: 'main',
+  helpers: require("./helpers/hbs.js").helpers,
   layoutsDir: path.join(app.get('views'), 'layouts'),
   partialsDir: path.join(app.get('views'), 'partials'),
   extname: '.hbs'
@@ -40,6 +41,9 @@ app.use((req, res, next) => {
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
   res.locals.user = req.user || null;
+  if (req.user){
+  res.locals.admin = (req.user.rol=="administrador") || null;
+  }
   next();
 });
 
@@ -47,6 +51,8 @@ app.use((req, res, next) => {
 app.use(require('./routes'));
 app.use(require('./routes/users'));
 app.use(require('./routes/notes'));
+app.use(require('./routes/samples'));
+app.use(require('./routes/mlmodels'));
 
 // static files
 app.use(express.static(path.join(__dirname, 'public')));
