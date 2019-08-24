@@ -1,21 +1,31 @@
-  <select name="" id="">
-    <option value="value1">Modelo 1</option>
-    <option value="value1">Modelo 2</option>
-  </select>
 <div class="row">
   {{#each samples}}
   <div class="col-md-3">
     <div class="card">
       <div class="card-body">
         <h4 class="card-title d-flex justify-content-between align-items-center">
-          {{ title }} <a href="/samples/edit-samples/{{_id}}"><i class="fas fa-edit"></i></a>
+          Editar <a href="/samples/edit/{{_id}}"><i class="fas fa-edit"></i></a>
         </h4>
-        <p>{{ description }}</p>
+        <h4 class="card-title d-flex justify-content-between align-items-center">Etiquetas
+        {{#if labels}}
+        <a class="fas fa-check" style="color: green;"></a>
+        {{else}}
+        <a class="fas fa-times" style="color: red;"></a>
+        {{/if}}
+        </h4>
+        <h4 class="card-title d-flex justify-content-between align-items-center">Estimacion
+        {{#if prediction}}
+        <a class="fa fa-check" style="color: green;"></a>
+        {{else}}
+        <a class="fa fa-times" style="color: red;"></a>
+        {{/if}}
+        </h4>
+        <a  style="margin-bottom: 20px;" href="/samples/view/{{_id}}" class="btn btn-success btn-block">Ver muestra</a>
         <!-- DELETE REQUEST -->
-        <form action="/notes/delete/{{_id}}?_method=DELETE" method="POST">
+        <form action="/samples/delete/{{_id}}?_method=DELETE" method="POST">
           <input type="hidden" name="_method" value="DELETE">
-          <button type="submit" class="btn btn-danger btn-block btn-sm">Delete</button>
-        </form>
+          <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar</button>
+        </form>       
       </div>
     </div>
   </div>
@@ -24,9 +34,15 @@
     <div class="card-body">
       <h1>Hola {{user.name}}</h1>
       <p clsss="lead">Aún no hay muestras.</p>
-      <input type="file">
-      <a href="" class="btn btn-success btn-block">Subir</a>
+      <a href="/samples/add" class="btn btn-success btn-block">Crear muestra</a>
     </div>
   </div>
   {{/each}}
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col text-center">
+  <a href="/samples/add" class="btn btn-success button_new">Crear muestra</a>
+    </div>
+  </div>
 </div>

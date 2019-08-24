@@ -1,23 +1,30 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
-
-const MuestraSchema = new Schema({
-  espectro: {
-    type: [],
+const SampleSchema = new Schema({
+  espectro: [{
+    type: Number,
     required: true
-  },
-  fechaToma: {
-    type: String,
+  }],
+  labels: [{
+    type: Number,
     required: true
-  },
+  }],
+  prediction: [{
+    type: Number,
+    required: true
+  }],
   fechaSubida: {
     type: Date,
     default: Date.now
   },
-  investigador: {
+  detail: {
+    type: String,
+    required: false
+  },
+  user: {
     type: String,
     required: true
   }
 });
 
-module.exports = mongoose.model('Muestra', MuestraSchema);
+module.exports = mongoose.model("Sample", SampleSchema);

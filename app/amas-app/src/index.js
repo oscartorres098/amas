@@ -34,6 +34,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(express.json());
 
 // Global Variables
 app.use((req, res, next) => {
