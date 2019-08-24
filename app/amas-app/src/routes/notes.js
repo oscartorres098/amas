@@ -12,7 +12,8 @@ router.get('/notes/add', isAuthenticated, (req, res) => {
   res.render('notes/new-note');
 });
 
-router.post('/notes/new-note', isAuthenticated, async (req, res) => {
+router.post('/notes/new-note', async (req, res) => {
+  console.log(req.body);
   const { title, description } = req.body;
   const errors = [];
   if (!title) {

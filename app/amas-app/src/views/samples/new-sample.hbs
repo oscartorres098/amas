@@ -1,0 +1,67 @@
+<div class="col-md-4 mx-auto">
+  <div class="card text-center">
+    <div class="card-header">
+      <h3>Nueva muestra</h3>
+    </div>
+    <div class="card-body">
+      <form action="/samples/new-sample" method="POST">
+        <div class="form-group">
+          <textarea class="form-control rounded-0" name="espectro" rows="10" placeholder="Espectro separado por coma y espacio"></textarea>
+        </div>
+        <div class="form-check" align="left" style="margin-bottom: 25px;">
+          <input type="checkbox" name="check" id="check" value="1" onchange="javascript:showContent()" />
+          <label class="form-check-label" style="font-weight: bold;" for="exampleCheck1">Agregar etiquetas</label>
+        </div>
+        <div id="content">
+        <div class="form-group">
+          <input type="text" name="MOx" class="form-control" placeholder="MO.x" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="COx" class="form-control" placeholder="CO.x" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Arena" class="form-control" placeholder="Arena" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Arcilla" class="form-control" placeholder="Arcilla" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Limo" class="form-control" placeholder="Limo" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="CLASE_TEXTURAL" class="form-control" placeholder="CLASE_TEXTURAL" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="HUMEDAD_GRAVIMETRICA" class="form-control" placeholder="HUMEDAD_GRAVIMETRICA" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Dr" class="form-control" placeholder="Dr" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="pH" class="form-control" placeholder="pH" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Ca" class="form-control" placeholder="Ca" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Mg" class="form-control" placeholder="Mg" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="K" class="form-control" placeholder="K" autofocus/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Na" class="form-control" placeholder="Na" autofocus/>
+        </div>
+        </div>
+        <div class="form-group">
+          <textarea name="details" class="form-control" placeholder="Detalles (opcional)"></textarea>
+        </div>
+        <div class="form-group">
+          <button  href="/samples/new-sample" class="btn btn-primary btn-block" type="submit">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

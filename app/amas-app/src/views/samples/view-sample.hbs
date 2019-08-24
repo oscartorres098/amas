@@ -1,0 +1,135 @@
+
+  <div class="container">
+      <input id="datos" type="hidden" value="{{sample.espectro}}"> 
+    <canvas id="myChart"></canvas>
+  </div>
+<div class="container" style="color: #fff">
+    <div class="row">
+    <div class="col-md-6">
+        <h1>Etiquetas</h1>
+    </div>
+    <div class="col-md-6">
+        <h1>Estimación</h1>
+    </div>
+    </div>
+  <div class="row">
+    <div class="col-md-4">
+        <h3>MO.x:</h3>
+        <h3>CO.x:</h3>
+        <h3>Arena:</h3>
+        <h3>Arcilla:</h3>
+        <h3>Limo:</h3>
+        <h3>CLASE_TEXTURAL:</h3>
+        <h3>HUMEDAD_GRAVIMETRICA:</h3>
+        <h3>Dr:</h3>
+        <h3>pH:</h3>
+        <h3>Ca:</h3>
+        <h3>Mg:</h3>
+        <h3>K:</h3>
+        <h3>Na:</h3>
+    </div>
+    <div class="col-md-2">
+        <h3>{{sample.labels.[0]}}</h3>
+        <h3>{{sample.labels.[1]}}</h3>
+        <h3>{{sample.labels.[2]}}</h3>
+        <h3>{{sample.labels.[3]}}</h3>
+        <h3>{{sample.labels.[4]}}</h3>
+        <h3>{{sample.labels.[5]}}</h3>
+        <h3>{{sample.labels.[6]}}</h3>
+        <h3>{{sample.labels.[7]}}</h3>
+        <h3>{{sample.labels.[8]}}</h3>
+        <h3>{{sample.labels.[9]}}</h3>
+        <h3>{{sample.labels.[10]}}</h3>
+        <h3>{{sample.labels.[11]}}</h3>
+        <h3>{{sample.labels.[12]}}</h3>
+    </div>
+    <div class="col-md-4">
+        <h3>MO.x:</h3>
+        <h3>CO.x:</h3>
+        <h3>Arena:</h3>
+        <h3>Arcilla:</h3>
+        <h3>Limo:</h3>
+        <h3>CLASE_TEXTURAL:</h3>
+        <h3>HUMEDAD_GRAVIMETRICA:</h3>
+        <h3>Dr:</h3>
+        <h3>pH:</h3>
+        <h3>Ca:</h3>
+        <h3>Mg:</h3>
+        <h3>K:</h3>
+        <h3>Na:</h3>
+    </div>
+    <div class="col-md-2">
+        <h3>{{sample.labels.[0]}}</h3>
+        <h3>{{sample.labels.[1]}}</h3>
+        <h3>{{sample.labels.[2]}}</h3>
+        <h3>{{sample.labels.[3]}}</h3>
+        <h3>{{sample.labels.[4]}}</h3>
+        <h3>{{sample.labels.[5]}}</h3>
+        <h3>{{sample.labels.[6]}}</h3>
+        <h3>{{sample.labels.[7]}}</h3>
+        <h3>{{sample.labels.[8]}}</h3>
+        <h3>{{sample.labels.[9]}}</h3>
+        <h3>{{sample.labels.[10]}}</h3>
+        <h3>{{sample.labels.[11]}}</h3>
+        <h3>{{sample.labels.[12]}}</h3>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col text-center">
+  <a href="/samples/add" class="btn btn-success">Caracterizar</a>
+    </div>
+  </div>
+</div>
+
+<script>
+
+    // Global Options
+    Chart.defaults.global.defaultFontFamily = 'Lato';
+    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontColor = '#fff';
+    var datos = document.getElementById("datos").value;
+    var datosa = datos.split(",").map(Number);
+
+    let massPopChart = new Chart(myChart, {
+      type:'line', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+      data:{
+        labels:["400.0","408.5","417.0","425.5","434.0","442.5","451.0","459.5","468.0","476.5","485.0","493.5","502.0","510.5","519.0","527.5","536.0","544.5","553.0","561.5","570.0","578.5","587.0","595.5","604.0","612.5","621.0","629.5","638.0","646.5","655.0","663.5","672.0","680.5","689.0","697.5","706.0","714.5","723.0","731.5","740.0","748.5","757.0","765.5","774.0","782.5","791.0","799.5","808.0","816.5","825.0","833.5","842.0","850.5","859.0","867.5","876.0","884.5","893.0","901.5","910.0","918.5","927.0","935.5","944.0","952.5","961.0","969.5","978.0","986.5","995.0","1003.5","1012.0","1020.5","1029.0","1037.5","1046.0","1054.5","1063.0","1071.5","1080.0","1088.5","1097.0","1105.5","1114.0","1122.5","1131.0","1139.5","1148.0","1156.5","1165.0","1173.5","1182.0","1190.5","1199.0","1207.5","1216.0","1224.5","1233.0","1241.5","1250.0","1258.5","1267.0","1275.5","1284.0","1292.5","1301.0","1309.5","1318.0","1326.5","1335.0","1343.5","1352.0","1360.5","1369.0","1377.5","1386.0","1394.5","1403.0","1411.5","1420.0","1428.5","1437.0","1445.5","1454.0","1462.5","1471.0","1479.5","1488.0","1496.5","1505.0","1513.5","1522.0","1530.5","1539.0","1547.5","1556.0","1564.5","1573.0","1581.5","1590.0","1598.5","1607.0","1615.5","1624.0","1632.5","1641.0","1649.5","1658.0","1666.5","1675.0","1683.5","1692.0","1700.5","1709.0","1717.5","1726.0","1734.5","1743.0","1751.5","1760.0","1768.5","1777.0","1785.5","1794.0","1802.5","1811.0","1819.5","1828.0","1836.5","1845.0","1853.5","1862.0","1870.5","1879.0","1887.5","1896.0","1904.5","1913.0","1921.5","1930.0","1938.5","1947.0","1955.5","1964.0","1972.5","1981.0","1989.5","1998.0","2006.5","2015.0","2023.5","2032.0","2040.5","2049.0","2057.5","2066.0","2074.5","2083.0","2091.5","2100.0","2108.5","2117.0","2125.5","2134.0","2142.5","2151.0","2159.5","2168.0","2176.5","2185.0","2193.5","2202.0","2210.5","2219.0","2227.5","2236.0","2244.5","2253.0","2261.5","2270.0","2278.5","2287.0","2295.5","2304.0","2312.5","2321.0","2329.5","2338.0","2346.5","2355.0","2363.5","2372.0","2380.5","2389.0","2397.5","2406.0","2414.5","2423.0","2431.5","2440.0","2448.5","2457.0","2465.5","2474.0","2482.5","2491.0"
+],
+        datasets:[{
+          label:'Reflectancia',
+          data: datosa,
+          backgroundColor:[
+            'rgba(54, 162, 235, 0.6)',
+          ],
+          borderWidth:1,
+          borderColor:'#777',
+          hoverBorderWidth:3,
+          hoverBorderColor:'#000'
+        }]
+      },
+      options:{
+        title:{
+          display:true,
+          text:'Espectro de la Muestra',
+          fontSize:25
+        },
+        layout:{
+          padding:{
+            left:50,
+            right:0,
+            bottom:0,
+            top:0
+          }
+        },
+        tooltips:{
+          enabled:true
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+
+</script>

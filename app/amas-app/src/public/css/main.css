@@ -21,3 +21,7 @@ body{
   width: 100px;
   height: 100px;
 }
+.button_new {
+  position: fixed;
+  bottom: 50px;
+}
