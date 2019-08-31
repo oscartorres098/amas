@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+var request = require('request');
 
 const Sample = require("../models/Sample");
 // Helpers
@@ -32,19 +33,19 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
     if(!MOx || !COx || !Arena|| !Arcilla || !Limo|| !CLASE_TEXTURAL|| !HUMEDAD_GRAVIMETRICA|| !Dr|| !pH|| !Ca|| !Mg|| !K|| !Na ){
       errors.push({ text: "Por favor llene todas las etiquetas." });
     }else{
-      label.push(parseDouble(MOx));
-      label.push(parseDouble(COx));
-      label.push(parseDouble(Arena));
-      label.push(parseDouble(Arcilla));
-      label.push(parseDouble(Limo));
-      label.push(parseDouble(CLASE_TEXTURAL));
-      label.push(parseDouble(HUMEDAD_GRAVIMETRICA));
-      label.push(parseDouble(Dr));
-      label.push(parseDouble(pH));
-      label.push(parseDouble(Ca));
-      label.push(parseDouble(Mg));
-      label.push(parseDouble(K));
-      label.push(parseDouble(Na));
+      label.push(parseFloat(MOx));
+      label.push(parseFloat(COx));
+      label.push(parseFloat(Arena));
+      label.push(parseFloat(Arcilla));
+      label.push(parseFloat(Limo));
+      label.push(parseFloat(CLASE_TEXTURAL));
+      label.push(parseFloat(HUMEDAD_GRAVIMETRICA));
+      label.push(parseFloat(Dr));
+      label.push(parseFloat(pH));
+      label.push(parseFloat(Ca));
+      label.push(parseFloat(Mg));
+      label.push(parseFloat(K));
+      label.push(parseFloat(Na));
       newSample.labels = label;
       
     }
@@ -77,7 +78,7 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
 // Edit Sample
 router.get("/samples/edit/:id", isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
-  if (sample.user != req.sample.id) {
+  if (sample.user != req.user.id) {
     req.flash("error_msg", "No autrizado");
     return res.redirect("/samples");
   }
@@ -85,10 +86,60 @@ router.get("/samples/edit/:id", isAuthenticated, async (req, res) => {
 });
 
 router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
-  const { espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, detail } = req.body;
-  await Note.findByIdAndUpdate(req.params.id, { espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, detail });
-  req.flash("success_msg", "Nota editada");
-  res.redirect("/samples");
+  const sample = await Sample.findById(req.params.id);
+  const errors = [];
+  var espectroa = [];
+  var label = [];
+  const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, detail } = req.body;
+  if (!espectro) {
+    errors.push({ text: "Por favor introdusca el espectro." });
+  }else{
+    espectroa = espectro.split(",").map(Number);
+    sample.espectro = espectroa;
+  }
+  if(check){
+    if(!MOx || !COx || !Arena|| !Arcilla || !Limo|| !CLASE_TEXTURAL|| !HUMEDAD_GRAVIMETRICA|| !Dr|| !pH|| !Ca|| !Mg|| !K|| !Na ){
+      errors.push({ text: "Por favor llene todas las etiquetas." });
+    }else{
+      label.push(parseFloat(MOx));
+      label.push(parseFloat(COx));
+      label.push(parseFloat(Arena));
+      label.push(parseFloat(Arcilla));
+      label.push(parseFloat(Limo));
+      label.push(parseFloat(CLASE_TEXTURAL));
+      label.push(parseFloat(HUMEDAD_GRAVIMETRICA));
+      label.push(parseFloat(Dr));
+      label.push(parseFloat(pH));
+      label.push(parseFloat(Ca));
+      label.push(parseFloat(Mg));
+      label.push(parseFloat(K));
+      label.push(parseFloat(Na));
+      sample.labels = label;
+    }
+  }
+  if (errors.length > 0) {
+    res.render("samples/edi-sample", {
+      errors,
+      espectro,
+      MOx,
+      COx,
+      Arena,
+      Arcilla,
+      Limo,
+      CLASE_TEXTURAL,
+      HUMEDAD_GRAVIMETRICA,
+      pH,
+      Ca,
+      Mg,
+      K,
+      Na,
+      detail
+    });
+  } else {
+    await Sample.findByIdAndUpdate(req.params.id, sample);
+    req.flash("success_msg", "Nota editada");
+    res.redirect("/samples");
+  }
 });
 // Delete Sample
 router.delete('/samples/delete/:id', isAuthenticated, async (req, res) => {
@@ -100,4 +151,18 @@ router.delete('/samples/delete/:id', isAuthenticated, async (req, res) => {
 router.get('/samples/view/:id', isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
   res.render("samples/view-sample", { sample });
+});
+// Estimate sample
+router.get('/sample/estimate/:id/:model', isAuthenticated, async (req, res) => {
+  const sample = await Sample.findById(req.params.id);
+  const espectro = sample.espectro;
+  const formData = JSON.stringify({"espetro": espectro});
+  const model = req.params.model;
+  request.post({
+    url: 'http://localhost:5000/api/regSc.pkl',
+    form: formData
+  },
+  function (err, httpResponse, body) {
+    res.render("samples/view-caract", { body, err, model });
+  });
 });

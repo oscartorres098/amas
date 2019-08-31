@@ -13,13 +13,58 @@
       <h3>Edit Sample</h3>
     </div>
     <div class="card-body">
-      <form action="/notes/edit-note/{{note._id}}?_method=PUT" method="POST">
+      <form action="/samples/edit-sample/{{sample._id}}?_method=PUT" method="POST">
         <input type="hidden" name="_method" value="PUT">
         <div class="form-group">
-          <input type="text" name="title" class="form-control" value="{{note.title}}"/>
+          <textarea class="form-control rounded-0" name="espectro" rows="10" >{{sample.espectro}}</textarea>
+        </div>
+        <div class="form-check" align="left" style="margin-bottom: 25px;">
+          <input type="checkbox" name="check" id="check" value="1" onchange="javascript:showContent()" />
+          <label class="form-check-label" style="font-weight: bold;" for="exampleCheck1">Agregar etiquetas</label>
+        </div>
+        <div class="content">
+        <div class="form-group">
+          <input type="text" name="MOx" class="form-control" value="{{sample.labels.[0]}}"/>
         </div>
         <div class="form-group">
-          <textarea name="description" class="form-control">{{note.description}}</textarea>
+          <input type="text" name="COx" class="form-control" value="{{sample.labels.[1]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Arena" class="form-control" value="{{sample.labels.[2]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Arcilla" class="form-control" value="{{sample.labels.[3]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Limo" class="form-control" value="{{sample.labels.[4]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="CLASE_TEXTURAL" class="form-control" value="{{sample.labels.[5]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="HUMEDAD_GRAVIMETRICA" class="form-control" value="{{sample.labels.[6]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Dr" class="form-control"  value="{{sample.labels.[7]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="pH" class="form-control"  value="{{sample.labels.[8]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Ca" class="form-control"  value="{{sample.labels.[9]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Mg" class="form-control"  value="{{sample.labels.[10]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="K" class="form-control" value="{{sample.labels.[11]}}"/>
+        </div>
+        <div class="form-group">
+          <input type="text" name="Na" class="form-control" value="{{sample.labels.[12]}}"/>
+        </div>
+        <div class="form-group">
+          <textarea name="details" class="form-control" />{{sample.details}}</textarea>
+        </div>
         </div>
         <div class="form-group">
           <button class="btn btn-primary btn-block" type="submit">

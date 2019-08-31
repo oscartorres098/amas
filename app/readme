@@ -1,0 +1,20 @@
+#to install flask api:
+#create env
+py -m venv env
+#virtual env
+env\Scripts\activate
+#install pip
+pip install flask
+set FLASK_APP=app.py
+flask run
+pip install numpy
+pip install sklearn
+#to run flask api:
+#virtual env
+env\Scripts\activate
+run flask
+
+#to install node app 
+npm install
+#to run node app
+npm run dev
