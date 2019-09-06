@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const SampleSchema = new Schema({
   espectro: [{
-    type: Number,
+    type: String,
     required: true
   }],
   labels: [{
