@@ -1,8 +1,38 @@
 <div class="container" style="color: #fff">
 <h1>Caracterización</h1>
 <h2>Modelo: {{model}}</h2>
-{{#if body}}
-<h2>ph: {{body}}</h2>
+{{#if estimacion}}
+<div class="row">
+    <div class="col-md-4">
+        <h3>MO.x:</h3>
+        <h3>CO.x:</h3>
+        <h3>Arena:</h3>
+        <h3>Arcilla:</h3>
+        <h3>Limo:</h3>
+        <h3>HUMEDAD_GRAVIMETRICA:</h3>
+        <h3>Dr:</h3>
+        <h3>pH:</h3>
+        <h3>Ca:</h3>
+        <h3>Mg:</h3>
+        <h3>K:</h3>
+        <h3>Na:</h3>
+    </div>
+    <div class="col-md-2">
+        <h3>{{estimacion.[0]}}</h3>
+        <h3>{{estimacion.[1]}}</h3>
+        <h3>{{estimacion.[2]}}</h3>
+        <h3>{{estimacion.[3]}}</h3>
+        <h3>{{estimacion.[4]}}</h3>
+        <h3>{{estimacion.[5]}}</h3>
+        <h3>{{estimacion.[6]}}</h3>
+        <h3>{{estimacion.[7]}}</h3>
+        <h3>{{estimacion.[8]}}</h3>
+        <h3>{{estimacion.[9]}}</h3>
+        <h3>{{estimacion.[10]}}</h3>
+        <h3>{{estimacion.[11]}}</h3>
+    </div>
+    
+  </div>
 {{/if}}
 {{#if err}}
 <h2>Error: {{err}}</h2>

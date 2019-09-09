@@ -3,14 +3,12 @@
       <input id="datos" type="hidden" value="{{sample.espectro}}"> 
     <canvas id="myChart"></canvas>
   </div>
-<div class="container" style="color: #fff">
+<div class="container " style="color: #fff">
     <div class="row">
     <div class="col-md-6">
         <h1>Etiquetas</h1>
     </div>
-    <div class="col-md-6">
-        <h1>Estimación</h1>
-    </div>
+
     </div>
   <div class="row">
     <div class="col-md-4">
@@ -43,45 +41,19 @@
         <h3>{{sample.labels.[11]}}</h3>
         <h3>{{sample.labels.[12]}}</h3>
     </div>
-    <div class="col-md-4">
-        <h3>MO.x:</h3>
-        <h3>CO.x:</h3>
-        <h3>Arena:</h3>
-        <h3>Arcilla:</h3>
-        <h3>Limo:</h3>
-        <h3>CLASE_TEXTURAL:</h3>
-        <h3>HUMEDAD_GRAVIMETRICA:</h3>
-        <h3>Dr:</h3>
-        <h3>pH:</h3>
-        <h3>Ca:</h3>
-        <h3>Mg:</h3>
-        <h3>K:</h3>
-        <h3>Na:</h3>
-    </div>
-    <div class="col-md-2">
-        <h3>{{sample.labels.[0]}}</h3>
-        <h3>{{sample.labels.[1]}}</h3>
-        <h3>{{sample.labels.[2]}}</h3>
-        <h3>{{sample.labels.[3]}}</h3>
-        <h3>{{sample.labels.[4]}}</h3>
-        <h3>{{sample.labels.[5]}}</h3>
-        <h3>{{sample.labels.[6]}}</h3>
-        <h3>{{sample.labels.[7]}}</h3>
-        <h3>{{sample.labels.[8]}}</h3>
-        <h3>{{sample.labels.[9]}}</h3>
-        <h3>{{sample.labels.[10]}}</h3>
-        <h3>{{sample.labels.[11]}}</h3>
-        <h3>{{sample.labels.[12]}}</h3>
-    </div>
+    
   </div>
 </div>
-<div class="container">
-  <div class="row">
-    <div class="col text-center">
-  <a href="/sample/estimate/{{sample.id}}/m" class="btn btn-success">Caracterizar</a>
-    </div>
+
+      <form action="/sample/estimate/{{sample.id}}" method="POST" class="form-inline">
+  <div class="form-group mx-sm-3 mb-2">
+    <select name="modelo" placeholder="rol" class="form-control">
+      <option value="mor.pkl">Modelo ph</option>
+    </select>
   </div>
-</div>
+  <button type="submit" class="btn btn-primary mb-2">Estimar</button>
+</form>
+  
 
 <script>
 

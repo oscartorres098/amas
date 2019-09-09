@@ -89,8 +89,7 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
     var label = [];
     var espectro = "";
     var datos = espectros[i].split(";");
-    espectro = datos.slice(15, 262).toString();
-    spectre.push(espectro);
+    var cantEspect = parseInt(datos[1]);
     label.push(parseFloat(datos[1]));
     label.push(parseFloat(datos[2]));
     label.push(parseFloat(datos[3]));
@@ -107,11 +106,17 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
     newSample.labels = label;
     newSample.espectro = spectre;
     newSample.user = req.user.id;
+    espectro = datos.slice(15, 261).toString();
+    spectre.push(espectro);
+    for (j=2; j<=cantEspect; j++){
+      i++;
+      espectro = datos.slice(15, 261).toString();
+      spectre.push(espectro);
+    }
     try {
       await newSample.save();
     }
     catch(error) {
-
       errors.push({ text: error });
     }
   }
@@ -165,7 +170,6 @@ router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
       sample.labels = label;
     }
   }
-    sample.detail=detail;
   if (errors.length > 0) {
     res.render("samples/edi-sample", {
       errors,
@@ -202,26 +206,17 @@ router.get('/samples/view/:id', isAuthenticated, async (req, res) => {
   res.render("samples/view-sample", { sample });
 });
 // Estimate sample
-router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
+router.get('/sample/estimate/:id/:model', isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
-  const {modelo} = req.body;
-  const espectro = sample.espectro[0].split(",").map(Number);
+  const espectro = sample.espectro;
   const formData = JSON.stringify({"espetro": espectro});
-  const urls = 'http://localhost:5000/api/' + modelo;
   const model = req.params.model;
   request.post({
-    url: urls,
+    url: 'http://localhost:5000/api/regSc.pkl',
     form: formData
   },
   function (err, httpResponse, body) {
-    if (body){
-    var estimacion = JSON.parse(body);
-    sample.prediction.push(estimacion.toString());
-  }
-    console.log(sample);
-    sample.detail = "hola";
-    Sample.findByIdAndUpdate(req.params.id, sample);
-    res.render("samples/view-caract", { estimacion, err, model });
+    res.render("samples/view-caract", { body, err, model });
   });
 });
 module.exports = router;

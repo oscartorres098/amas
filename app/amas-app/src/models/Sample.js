@@ -10,8 +10,8 @@ const SampleSchema = new Schema({
     required: true
   }],
   prediction: [{
-    type: Number,
-    required: true
+    type: String,
+    required: false
   }],
   fechaSubida: {
     type: Date,
