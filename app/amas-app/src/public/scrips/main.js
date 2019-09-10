@@ -1,6 +1,6 @@
 function load() {
     element = document.getElementById("content");
-        element.style.display='none';
+    element.style.display='none';
 }
 
 function showContent() {

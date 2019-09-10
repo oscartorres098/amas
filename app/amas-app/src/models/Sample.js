@@ -7,19 +7,16 @@ const SampleSchema = new Schema({
   }],
   labels: [{
     type: Number,
-    required: true
   }],
   prediction: [{
     type: String,
-    required: false
   }],
   fechaSubida: {
     type: Date,
     default: Date.now
   },
   detail: {
-    type: String,
-    required: false
+    type: String
   },
   user: {
     type: String,

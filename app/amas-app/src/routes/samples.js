@@ -18,7 +18,7 @@ router.get("/samples/add", isAuthenticated, (req, res) => {
   res.render("samples/new-sample");
 });
 router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
-  const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, detail } = req.body;
+  const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, details } = req.body;
   const errors = [];
   var label = [];
   const newSample = new Sample({});
@@ -67,6 +67,7 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
       detail
     });
   } else {
+    newSample.detail = details;
     newSample.user = req.user.id;
     await newSample.save();
     req.flash("success_msg", "Nueva muestra creada");
@@ -139,7 +140,7 @@ router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
   const errors = [];
   var label = [];
-  const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, detail } = req.body;
+  const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, details } = req.body;
   if (!espectro) {
     errors.push({ text: "Por favor introdusca el espectro." });
   }else{
@@ -163,9 +164,10 @@ router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
       label.push(parseFloat(K));
       label.push(parseFloat(Na));
       sample.labels = label;
+      console.log(label);
+      console.log(sample.labels);
     }
   }
-    sample.detail=detail;
   if (errors.length > 0) {
     res.render("samples/edi-sample", {
       errors,
@@ -185,6 +187,8 @@ router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
       detail
     });
   } else {
+    sample.detail=details;
+    console.log(sample.detail);
     await Sample.findByIdAndUpdate(req.params.id, sample);
     req.flash("success_msg", "Nota editada");
     res.redirect("/samples");
@@ -207,7 +211,7 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const {modelo} = req.body;
   const espectro = sample.espectro[0].split(",").map(Number);
   const formData = JSON.stringify({"espetro": espectro});
-  const urls = 'http://localhost:5000/api/' + modelo;
+  const urls = 'http://192.168.0.1:5000/api/' + modelo;
   const model = req.params.model;
   request.post({
     url: urls,
@@ -218,8 +222,6 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
     var estimacion = JSON.parse(body);
     sample.prediction.push(estimacion.toString());
   }
-    console.log(sample);
-    sample.detail = "hola";
     Sample.findByIdAndUpdate(req.params.id, sample);
     res.render("samples/view-caract", { estimacion, err, model });
   });
