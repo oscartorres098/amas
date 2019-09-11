@@ -25,7 +25,7 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
   if (!espectro) {
     errors.push({ text: "Por favor introdusca el espectro." });
   }else{
-    newSample.espectro = espectro;
+    newSample.espectro.push(espectro);
   }
   if(check){
     if(!MOx || !COx || !Arena|| !Arcilla || !Limo|| !CLASE_TEXTURAL|| !HUMEDAD_GRAVIMETRICA|| !Dr|| !pH|| !Ca|| !Mg|| !K|| !Na ){
@@ -213,14 +213,15 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const formData = JSON.stringify({"espetro": espectro});
   const urls = 'http://localhost:5000/api/' + modelo;
   const id = req.params.id;
+
   request.post({
     url: urls,
     form: formData
   },
   function (err, httpResponse, body) {
-    if (body){
+    if(!err){
     var estimacion = JSON.parse(body);
-  }
+    }
     res.render("samples/view-caract", { estimacion, err, modelo, id });
   });
 });

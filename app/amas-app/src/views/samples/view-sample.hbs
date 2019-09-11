@@ -55,6 +55,7 @@
   <div class="form-group mx-sm-3 mb-2">
     <select name="modelo" placeholder="rol" class="form-control">
       <option value="mor.pkl">Modelo ph</option>
+      <option value="minmax-fft-svm.pkl">minmax-fft-svm</option>
     </select>
   </div>
   <button type="submit" class="btn btn-primary mb-2">Estimar</button>
@@ -81,9 +82,16 @@
           dato = dato.split(",");
           modelo.innerHTML = dato[0];
         </script>
+        <a  style="margin-bottom: 20px;" href="/samples/view/{{_id}}" class="btn btn-success btn-block">Detalles</a>
+        <!-- DELETE REQUEST -->
+        <form action="/samples/delete/{{_id}}?_method=DELETE" method="POST">
+          <input type="hidden" name="_method" value="DELETE">
+          <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar</button>
+        </form>  
       </div>
     </div>
   </div>
+  
 {{/each}}
   </div>  
 

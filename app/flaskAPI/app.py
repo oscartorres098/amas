@@ -20,11 +20,18 @@ def make_predict(model):
   clf = joblib.load(models)
   data=request.get_json(force=True)
   datat = [data['espetro']]
+  datat = np.asarray(datat).transpose()
+  print (datat)
+  print (datat.shape)
   escalado = StandardScaler().fit(datat).transform(datat)
   fft_data = np.fft.fft(escalado)
   predict_request =fft_data
+  print (predict_request.real)
+  predict_request = np.asarray(predict_request).transpose()
   y_hat = clf.predict(predict_request.real)
+  print (y_hat)
   escaladon = scaler.inverse_transform(y_hat)
+  print (escaladon)
   output = escaladon
   b = output[0].tolist()
   return json.dumps(b)
