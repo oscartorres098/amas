@@ -8,7 +8,8 @@ const User = require('../models/User');
 const { isAdmin } = require('../helpers/auth');
 
 router.get('/users/signup', isAdmin, (req, res) => {
-  res.render('users/signup', { singUp });
+  const view = "users";
+  res.render('users/signup', { view });
 });
 
 router.post('/users/signup',isAdmin, async (req, res) => {

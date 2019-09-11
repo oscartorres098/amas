@@ -1,6 +1,6 @@
 <div class="container" style="color: #fff">
 <h1>Caracterización</h1>
-<h2>Modelo: {{model}}</h2>
+<h2>Modelo: {{modelo}}</h2>
 {{#if estimacion}}
 <div class="row">
     <div class="col-md-4">
@@ -33,6 +33,22 @@
     </div>
     
   </div>
+  <form action="/sample/save-estimation/{{id}}?_method=PUT" method="POST">
+  <input type="hidden" name="_method" value="PUT">
+  <input type="hidden" name="estimacion" value="{{estimacion}}">
+  <input type="hidden" name="model" value="{{modelo}}">
+  <div class="container">
+  <div class="row">
+    <button class="btn btn-success" type="submit">
+            Guardar
+          </button>
+      </form>
+    <div class="col text-center">
+      <a href="/samples/view/{{id}}" class="btn btn-danger">Cancelar</a>
+    </div>
+  </div>
+</div>
+
 {{/if}}
 {{#if err}}
 <h2>Error: {{err}}</h2>

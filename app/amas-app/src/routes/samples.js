@@ -211,8 +211,8 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const {modelo} = req.body;
   const espectro = sample.espectro[0].split(",").map(Number);
   const formData = JSON.stringify({"espetro": espectro});
-  const urls = 'http://192.168.0.1:5000/api/' + modelo;
-  const model = req.params.model;
+  const urls = 'http://localhost:5000/api/' + modelo;
+  const id = req.params.id;
   request.post({
     url: urls,
     form: formData
@@ -220,10 +220,16 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   function (err, httpResponse, body) {
     if (body){
     var estimacion = JSON.parse(body);
-    sample.prediction.push(estimacion.toString());
   }
-    Sample.findByIdAndUpdate(req.params.id, sample);
-    res.render("samples/view-caract", { estimacion, err, model });
+    res.render("samples/view-caract", { estimacion, err, modelo, id });
   });
+});
+router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
+  var sample = await Sample.findById(req.params.id);
+  var {estimacion, model} = req.body;
+  estimacion = model + "," + estimacion;
+  sample.prediction.push(estimacion);
+  await Sample.findByIdAndUpdate(req.params.id, sample);
+  res.render("samples/view-sample", { sample });
 });
 module.exports = router;
