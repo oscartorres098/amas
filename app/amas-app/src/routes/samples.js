@@ -20,12 +20,15 @@ router.get("/samples/add", isAuthenticated, (req, res) => {
 router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
   const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, details } = req.body;
   const errors = [];
+  var espectros = espectro.split(";");
   var label = [];
   const newSample = new Sample({});
   if (!espectro) {
     errors.push({ text: "Por favor introdusca el espectro." });
   }else{
-    newSample.espectro.push(espectro);
+    for(i=0; i<=espectros.length-1;i++){    
+      newSample.espectro.push(espectros[i]);
+    }
   }
   if(check){
     if(!MOx || !COx || !Arena|| !Arcilla || !Limo|| !CLASE_TEXTURAL|| !HUMEDAD_GRAVIMETRICA|| !Dr|| !pH|| !Ca|| !Mg|| !K|| !Na ){
@@ -83,15 +86,16 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
   if (req.files.samples){
   var samples = req.files.samples;
   var data = samples.data.toString();
-  var espectros = data.split(/\n/);
-  for (i=1; i<espectros.length-1;i++){ 
+  var linea = data.split(/\n/);
+  var i = 1;
+  while (i<linea.length-1){ 
+    console.log(i);
     const newSample = new Sample({});
-    var spectre = [];
     var label = [];
-    var espectro = "";
-    var datos = espectros[i].split(";");
-    espectro = datos.slice(15, 262).toString();
-    spectre.push(espectro);
+    var espectro = [];
+    var j = 1;
+    var datos = linea[i].split(";");
+    if(parseFloat(datos[0])==1){
     label.push(parseFloat(datos[1]));
     label.push(parseFloat(datos[2]));
     label.push(parseFloat(datos[3]));
@@ -105,8 +109,25 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
     label.push(parseFloat(datos[11]));
     label.push(parseFloat(datos[12]));
     label.push(parseFloat(datos[13]));
+  }
+    if (parseInt(datos[14])>1){
+      while (j<=parseInt(datos[14])){
+        espectro.push(datos.slice(15, 262).toString());
+        console.log(j);
+        console.log(parseInt(datos[14]));
+        if (j<parseInt(datos[14]))
+        console.log("hola");
+        datos = linea[i+j].split(";");
+        espectro.push(datos.slice(15, 262).toString());
+        j++;
+      }
+    }else if (parseInt(datos[14])==1) {
+      espectro.push(datos.slice(15, 262).toString());
+    }
+    i=i+j-1;
+    i++;
     newSample.labels = label;
-    newSample.espectro = spectre;
+    newSample.espectro = espectro;
     newSample.user = req.user.id;
     try {
       await newSample.save();
@@ -164,8 +185,6 @@ router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
       label.push(parseFloat(K));
       label.push(parseFloat(Na));
       sample.labels = label;
-      console.log(label);
-      console.log(sample.labels);
     }
   }
   if (errors.length > 0) {
@@ -188,7 +207,6 @@ router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
     });
   } else {
     sample.detail=details;
-    console.log(sample.detail);
     await Sample.findByIdAndUpdate(req.params.id, sample);
     req.flash("success_msg", "Nota editada");
     res.redirect("/samples");

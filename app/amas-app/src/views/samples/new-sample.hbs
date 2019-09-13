@@ -6,6 +6,7 @@
     <div class="card-body">
       <form action="/samples/new-sample" method="POST">
         <div class="form-group">
+          <label style="font-weight: bold;" >Espectro</label>
           <textarea class="form-control rounded-0" name="espectro" rows="10" placeholder="Espectro separado por coma y espacio"></textarea>
         </div>
         <div class="form-check" align="left" style="margin-bottom: 25px;">
@@ -14,43 +15,56 @@
         </div>
         <div id="content">
         <div class="form-group">
-          <input type="text" name="MOx" class="form-control" placeholder="MO.x" autofocus/>
+          <label style="font-weight: bold;" >MO.x:</label>
+          <input type="text" name="MOx" class="form-control" placeholder="Valor de MO.x" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="COx" class="form-control" placeholder="CO.x" autofocus/>
+          <label style="font-weight: bold;" >CO.x:</label>
+          <input type="text" name="COx" class="form-control" placeholder="Valor de CO.x" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="Arena" class="form-control" placeholder="Arena" autofocus/>
+          <label style="font-weight: bold;" >Arena:</label>
+          <input type="text" name="Arena" class="form-control" placeholder="Valor de Arena" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="Arcilla" class="form-control" placeholder="Arcilla" autofocus/>
+          <label style="font-weight: bold;" >Arcilla:</label>
+          <input type="text" name="Arcilla" class="form-control" placeholder="Valor de Arcilla" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="Limo" class="form-control" placeholder="Limo" autofocus/>
+          <label style="font-weight: bold;" >Limo:</label>
+          <input type="text" name="Limo" class="form-control" placeholder="Valor de Limo" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="CLASE_TEXTURAL" class="form-control" placeholder="CLASE_TEXTURAL" autofocus/>
+          <label style="font-weight: bold;" >CLASE_TEXTURAL:</label>
+          <input type="text" name="CLASE_TEXTURAL" class="form-control" placeholder="Valor de CLASE_TEXTURAL" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="HUMEDAD_GRAVIMETRICA" class="form-control" placeholder="HUMEDAD_GRAVIMETRICA" autofocus/>
+          <label style="font-weight: bold;" >HUMEDAD_GRAVIMETRICA:</label>
+          <input type="text" name="HUMEDAD_GRAVIMETRICA" class="form-control" placeholder="Valor de HUMEDAD_GRAVIMETRICA" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="Dr" class="form-control" placeholder="Dr" autofocus/>
+          <label style="font-weight: bold;" >Dr:</label>
+          <input type="text" name="Dr" class="form-control" placeholder="Valor de Dr" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="pH" class="form-control" placeholder="pH" autofocus/>
+          <label style="font-weight: bold;" >pH:</label>
+          <input type="text" name="pH" class="form-control" placeholder="Valor de pH" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="Ca" class="form-control" placeholder="Ca" autofocus/>
+          <label style="font-weight: bold;" >Ca:</label>
+          <input type="text" name="Ca" class="form-control" placeholder="Valor de Ca" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="Mg" class="form-control" placeholder="Mg" autofocus/>
+          <label style="font-weight: bold;" >Mg:</label>
+          <input type="text" name="Mg" class="form-control" placeholder="Valor de Mg" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="K" class="form-control" placeholder="K" autofocus/>
+          <label style="font-weight: bold;" >K:</label>
+          <input type="text" name="K" class="form-control" placeholder="Valor de K" autofocus/>
         </div>
         <div class="form-group">
-          <input type="text" name="Na" class="form-control" placeholder="Na" autofocus/>
+          <label style="font-weight: bold;" >Na:</label>
+          <input type="text" name="Na" class="form-control" placeholder="Valor de Na" autofocus/>
         </div>
         </div>
         <script>
@@ -58,6 +72,7 @@
       element.style.display='none';
       </script>
         <div class="form-group">
+          <label style="font-weight: bold;" >Detalles:</label>
           <textarea name="details" class="form-control" placeholder="Detalles (opcional)"></textarea>
         </div>
         <div class="form-group">
