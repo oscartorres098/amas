@@ -17,15 +17,21 @@
               <a class="dropdown-item" href="/samples/add-frfile">Subir muestra desde archivo</a>
             </div>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/mlmodels/create">Entrenar</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Modelos
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/mlmodels">Ver Modelos</a>
+              <a class="dropdown-item" href="/mlmodels/create">Entranar Modelo</a>
+            </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/">Comparar</a>
+            <a class="nav-link" href="/">Actividad</a>
           </li>
           {{#if admin}}
             <li class="nav-item">
-              <a class="nav-link" href="/users">usuarios</a>
+              <a class="nav-link" href="/users">Usuarios</a>
             </li>
           {{/if}}
           {{#if_equal user.name "admin"}}

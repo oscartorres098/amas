@@ -89,13 +89,12 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
   var linea = data.split(/\n/);
   var i = 1;
   while (i<linea.length-1){ 
-    console.log(i);
     const newSample = new Sample({});
     var label = [];
     var espectro = [];
     var j = 1;
     var datos = linea[i].split(";");
-    if(parseFloat(datos[0])==1){
+    if(parseInt(datos[0])==1){
     label.push(parseFloat(datos[1]));
     label.push(parseFloat(datos[2]));
     label.push(parseFloat(datos[3]));
@@ -113,10 +112,7 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
     if (parseInt(datos[14])>1){
       while (j<=parseInt(datos[14])){
         espectro.push(datos.slice(15, 262).toString());
-        console.log(j);
-        console.log(parseInt(datos[14]));
         if (j<parseInt(datos[14]))
-        console.log("hola");
         datos = linea[i+j].split(";");
         espectro.push(datos.slice(15, 262).toString());
         j++;
