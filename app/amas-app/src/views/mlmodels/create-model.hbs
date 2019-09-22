@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col-md-4 mx-auto">
+    <div class="card">
+      <div class="card-header">
+        Crear modelo
+      </div>
+      <div class="card-body">
+        <form action="/models/new-model" method="POST">
+          <div class="form-group">
+            <input type="text" class="form-control" name="name" placeholder="Nombre del modelo" value="{{name}}">
+          </div>
+          <div class="form-group">
+            <select name="scalee" class="form-control">
+              <option value="minmax">Minimos y maximos</option>
+              <option value="standard">Estandar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select name="preprocessing" class="form-control">
+              <option value="dct">Transformada de Coseno directa</option>
+              <option value="fft">Transformada de rapida de Fourier</option>
+              <option value="dwt">Transformada de discreta de Wavelet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <select name="model" class="form-control">
+              <option value="svm">Maquinas de vectores de soporte</option>
+              <option value="fft">Redes neuronales</option>
+              <option value="dwt">Regresión lineal</option>
+            </select>
+          </div>
+          <div class="form-group">
+          <input type="file">
+          </div>
+          <button class="btn btn-primary btn-block">
+            Entrenar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

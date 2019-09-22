@@ -37,10 +37,10 @@ def make_predict(model):
 
 @app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
 def train_model(model, scaler, preprocessing):
-    model = "models/" + model
+    #model = "models/" + model
     models = open(model,"rb")
-    scaler = joblib.load("scaler/" + scaler + ".save" )
-    regressor = joblib.load(models)
+    #scaler = joblib.load("scaler/" + scaler + ".save" )
+    #regressor = joblib.load(models)
     request_content = request.get_json(force=True)
     data = request_content['espetro']
     labels = request_content['labels']

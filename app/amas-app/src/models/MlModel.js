@@ -4,10 +4,10 @@ const MlModelSchema = new Schema({
   scaler: {
     type: String
   },
-  pre_method: {
+  preprocessing: {
     type: String
   },
-  train_method: {
+  model: {
     type: String
   },
   rr: {
@@ -17,7 +17,10 @@ const MlModelSchema = new Schema({
   mse: {
     type: Number,
   },
-  modelo: {
+  cross_val_score: [{
+    type: Number,
+  }],
+  name: {
     type: Buffer,
   },
   fechaSubida: {
@@ -33,4 +36,4 @@ const MlModelSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model("Sample", MlModelSchema);
+module.exports = mongoose.model("MlModel", MlModelSchema);
