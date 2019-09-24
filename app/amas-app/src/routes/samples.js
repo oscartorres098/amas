@@ -11,6 +11,7 @@ const { isAdmin } = require("../helpers/auth");
 router.get("/samples", isAuthenticated, async (req, res) => {
   const samples = await Sample.find();
   const view = "caract";
+
   res.render("samples/all-samples", { samples, view });
 });
 //Create new sample
@@ -234,7 +235,11 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   },
   function (err, httpResponse, body) {
     if(!err){
-    var estimacion = JSON.parse(body);
+      try{
+        var estimacion = JSON.parse(body);
+      }catch(err){
+        console.log(err);
+      }
     }
     res.render("samples/view-caract", { estimacion, err, modelo, id });
   });
@@ -245,6 +250,6 @@ router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   estimacion = model + "," + estimacion;
   sample.prediction.push(estimacion);
   await Sample.findByIdAndUpdate(req.params.id, sample);
-  res.render("samples/view-sample", { sample });
+  res.redirect("samples/view-sample", { sample });
 });
 module.exports = router;
