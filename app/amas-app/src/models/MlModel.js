@@ -32,5 +32,4 @@ const MlModelSchema = new Schema({
     required: true
   }
 });
-
-module.exports = mongoose.model("Sample", MlModelSchema);
+module.exports = mongoose.model("MlModel", MlModelSchema);
