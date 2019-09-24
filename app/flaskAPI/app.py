@@ -46,8 +46,8 @@ def train_model(model, scaler, preprocessing):
     labels = request_content['labels']
     data = np.asarray(data)
     labels = np.asarray(labels)
-    print(data.shape)
-    print(labels.shape)
+    print(data)
+    print(labels)
     transformed_data, transformed_labels = processing.transform_data(data, labels, scaler, preprocessing)
     trained_model, mse, r2, cvs = processing.train_nmodel(data, labels)
     today = date.today().strftime("%B-%d-%Y,%H:%M")

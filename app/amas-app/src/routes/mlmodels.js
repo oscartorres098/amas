@@ -12,7 +12,7 @@ router.get("/models", isAuthenticated, async (req, res) => {
   const view = "models";
   res.render("samples/all-samples", { samples, view });
 });
-//Create new sample
+//Create new model
 router.get("/models/train", isAuthenticated, (req, res) => {
   res.render("mlmodels/create-model");
 });
@@ -25,8 +25,6 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
   const mlModel = new MlModel({});
   console.log(samples[0]);
   for(i=0; i<samples.length; i++){
-      console.log("espectro:"+samples[i].espectro[0]);
-      console.log("etoqietas:"+samples[i].labels);
       spectres.push(samples[i].espectro);
       etiquetas.push(samples[i].labels.toString())
   }
