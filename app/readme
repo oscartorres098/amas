@@ -9,6 +9,7 @@ set FLASK_APP=app.py
 flask run
 pip install numpy
 pip install sklearn
+pip install pywt
 #to run flask api:
 #virtual env
 env\Scripts\activate
