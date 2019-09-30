@@ -11,6 +11,7 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVR
 from scipy.fftpack import dct
+import joblib
 
 def transform_data(data, labels, scaler, preprocessing):
     if (scaler == "minmax"):
@@ -36,7 +37,47 @@ def train_nmodel(data, labels):
     y_pred = mor.predict(x_test)
     mse = mean_squared_error(y_test, y_pred)
     r2 = r2_score(y_test, y_pred)
-    cvs = cross_val_score(mor, data, labels, cv=4, scoring='neg_mean_squared_error')
+    cvs = cross_val_score(mor, data, labels, cv=3, scoring='neg_mean_squared_error')
     print (y_pred)
     print (x_train)
     return mor, mse, r2, cvs
+
+def predictDefault(data):
+    mm_data = MinMaxScaler().fit(data).transform(data)
+    std_data = StandardScaler().fit(data).transform(data)
+
+    mm_data_d1 = np.diff(mm_data)
+    std_data_d1 = np.diff(std_data)
+    mm_data_d2 = np.diff(mm_data, n=2)
+    std_data_d2 = np.diff(std_data, n=2)
+
+    mm_all_data = np.concatenate((std_data, mm_data_d1), axis = 1)
+    mm_all_data = np.concatenate((mm_all_data, mm_data_d2), axis = 1)
+    std_all_data = np.concatenate((std_data, std_data_d1), axis = 1)
+    std_all_data = np.concatenate((std_all_data, std_data_d2), axis = 1)
+
+    mm_fft_data = np.fft.fft(mm_all_data)
+    sd_fft_data = np.fft.fft(std_all_data)
+    sd_dwt_data, data_d = pywt.dwt(std_all_data, 'db1')
+
+    arcilla = joblib.load("models/Arcilla.pkl")
+    arena = joblib.load("models/ArenaModel.pkl")
+    mo = joblib.load("models/MOModel.pkl")
+    co = joblib.load("models/COModel.pkl")
+    ca = joblib.load("models/CaModel.pkl")
+    ph = joblib.load("models/pHModel.pkl")
+    dr = joblib.load("models/DrModel.pkl")
+    hg = joblib.load("models/HGModel.pkl")
+
+    mo_res = mo.predict(mm_fft_data.real)
+    co_res = co.predict(mm_fft_data.real)
+    arena_res = arena.predict(sd_dwt_data)
+    arcilla_res = arcilla.predict(sd_fft_data.real)
+    hg_res = hg.predict(mm_fft_data.real)
+    dr_res = dr.predict(mm_fft_data.real)
+    ph_res = ph.predict(sd_dwt_data)
+    ca_res = ca.predict(sd_fft_data.real)
+
+    output = np.concatenate((mo_res, co_res, arena_res, arcilla_res, hg_res, dr_res, ph_res, ca_res))
+    output = output.transpose()
+    return output

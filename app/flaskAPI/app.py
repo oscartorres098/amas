@@ -1,7 +1,6 @@
 import numpy as np
 from flask import Flask, abort, jsonify, request
 import pickle as pickle
-import joblib
 import processing
 import json
 from datetime import date
@@ -13,34 +12,37 @@ def index():
   return '<h1>Instrucciones:</h1>'
 @app.route('/api/<model>', methods=['POST'])
 def make_predict(model):
-    model = "models/" + model
-    models = open(model, "rb")
-    scaler = joblib.load("models/scaler.save")
-    clf = joblib.load(models)
     data=request.get_json(force=True)
-    datat = [data['espetro']]
-    datat = np.asarray(datat).transpose()
+    datat = data['espetro']
+    datat = np.asarray(datat)
+    #.transpose() ???
     print (datat)
     print (datat.shape)
-    escalado = StandardScaler().fit(datat).transform(datat)
-    fft_data = np.fft.fft(escalado)
-    predict_request =fft_data
-    print (predict_request.real)
-    predict_request = np.asarray(predict_request).transpose()
-    y_hat = clf.predict(predict_request.real)
-    print (y_hat)
-    escaladon = scaler.inverse_transform(y_hat)
-    print (escaladon)
-    output = escaladon
-    b = output[0].tolist()
+    if (model == "default"):
+        output = processing.predictDefault(datat)
+    else:
+        model = "models/" + model
+        models = open(model, "rb")
+        scaler = joblib.load("scaler/scaler.save")
+        clf = joblib.load(models)
+
+        escalado = StandardScaler().fit(datat).transform(datat)
+        fft_data = np.fft.fft(escalado)
+        predict_request =fft_data
+        print (predict_request.real)
+        predict_request = np.asarray(predict_request).transpose()
+        y_hat = clf.predict(predict_request.real)
+        print (y_hat)
+        escaladon = scaler.inverse_transform(y_hat)
+        print (escaladon)
+        output = escaladon
+
+    b = output.tolist()
     return json.dumps(b)
 
 @app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
 def train_model(model, scaler, preprocessing):
-    #model = "models/" + model
-    models = open(model,"rb")
-    #scaler = joblib.load("scaler/" + scaler + ".save" )
-    #regressor = joblib.load(models)
+    #models = open(model,"rb")
     request_content = request.get_json(force=True)
     data = request_content['espetro']
     labels = request_content['labels']
@@ -52,7 +54,7 @@ def train_model(model, scaler, preprocessing):
     trained_model, mse, r2, cvs = processing.train_nmodel(data, labels)
     today = date.today().strftime("%B-%d-%Y,%H:%M")
 
-    file_name = "mor_" + today
+    file_name = scaler + "mor_" + today
     with open('models/' + file_name + '.pkl', 'wb') as f:
         pickle.dump(trained_model, f)
 
