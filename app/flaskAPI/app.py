@@ -37,17 +37,17 @@ def make_predict(model):
 
 @app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
 def train_model(model, scaler, preprocessing):
-    model = "models/" + model
+    #model = "models/" + model
     models = open(model,"rb")
-    scaler = joblib.load("scaler/" + scaler + ".save" )
-    regressor = joblib.load(models)
+    #scaler = joblib.load("scaler/" + scaler + ".save" )
+    #regressor = joblib.load(models)
     request_content = request.get_json(force=True)
     data = request_content['espetro']
     labels = request_content['labels']
     data = np.asarray(data)
     labels = np.asarray(labels)
-    print(data.shape)
-    print(labels.shape)
+    print(data)
+    print(labels)
     transformed_data, transformed_labels = processing.transform_data(data, labels, scaler, preprocessing)
     trained_model, mse, r2, cvs = processing.train_nmodel(data, labels)
     today = date.today().strftime("%B-%d-%Y,%H:%M")
