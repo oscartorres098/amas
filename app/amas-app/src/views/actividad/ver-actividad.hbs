@@ -1,0 +1,20 @@
+<table class="table" style="color: aliceblue">
+  <thead>
+    <tr>
+      <th scope="col">Acción</th>
+      <th scope="col">Usuario</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Objeto</th>
+    </tr>
+  </thead>
+  {{#each registros}}
+  <tbody>
+    <tr>
+      <th scope="row">{{tipo}}</th>
+      <td>{{user}}</td>
+      <td>{{fecha}}</td>
+      <td>{{mid}}</td>
+    </tr>
+  </tbody>
+  {{/each}}
+</table>
