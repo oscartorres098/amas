@@ -38,7 +38,7 @@ def make_predict(model):
 @app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
 def train_model(model, scaler, preprocessing):
     #model = "models/" + model
-    models = open(model,"rb")
+    #models = open(model,"rb")
     #scaler = joblib.load("scaler/" + scaler + ".save" )
     #regressor = joblib.load(models)
     request_content = request.get_json(force=True)
