@@ -25,8 +25,10 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
   const mlModel = new MlModel({});
   console.log(samples[0]);
   for(i=0; i<samples.length; i++){
-      spectres.push(samples[i].espectro);
-      etiquetas.push(samples[i].labels.toString())
+    if (samples[i].labels){
+      spectres.push(samples[i].espectro.toString());
+      etiquetas.push(samples[i].labels.toString());
+    }
   }
   mlModel.model = model;
   mlModel.scaler = scaler;

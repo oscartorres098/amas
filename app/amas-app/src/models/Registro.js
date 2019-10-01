@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const MlModelSchema = new Schema({
+const RegistrolSchema = new Schema({
   tipo: {
     type: String
   },
@@ -9,7 +9,11 @@ const MlModelSchema = new Schema({
   },
   user: {
     type: String
+  },
+  fecha: {
+    type: Date,
+    default: Date.now
   }
 });
 
-module.exports = mongoose.model("MlModel", MlModelSchema);
+module.exports = mongoose.model("Registro", RegistrolSchema);

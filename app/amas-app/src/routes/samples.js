@@ -3,6 +3,8 @@ const router = express.Router();
 var request = require('request');
 
 const Sample = require("../models/Sample");
+const Registro = require("../models/Registro");
+const LastInsert = require("../models/LastInsert");
 // Helpers
 const { isAuthenticated } = require("../helpers/auth");
 const { isAdmin } = require("../helpers/auth");
@@ -24,6 +26,7 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
   var espectros = espectro.split(";");
   var label = [];
   const newSample = new Sample({});
+  const newRegistro = new Registro({});
   if (!espectro) {
     errors.push({ text: "Por favor introdusca el espectro." });
   }else{
@@ -73,7 +76,15 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
   } else {
     newSample.detail = details;
     newSample.user = req.user.id;
+    const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
+    newSample.mid = iMid.sample;
+    iMid.sample = parseInt(newSample.mid)+1;
+    await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
     await newSample.save();
+    newRegistro.tipo = "Nueva muestra";
+    newRegistro.mid = newSample.id;
+    newRegistro.user = req.user.id;
+    await newRegistro.save();
     req.flash("success_msg", "Nueva muestra creada");
     res.redirect("/samples");
   }
@@ -91,6 +102,7 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
   var i = 1;
   while (i<linea.length-1){ 
     const newSample = new Sample({});
+    const newRegistro = new Registro({});
     var label = [];
     var espectro = [];
     var j = 1;
@@ -126,8 +138,17 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
     newSample.labels = label;
     newSample.espectro = espectro;
     newSample.user = req.user.id;
+    const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
+    newSample.mid = iMid.sample;
+    iMid.sample = parseInt(newSample.mid)+1;
+    await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
     try {
       await newSample.save();
+      newRegistro.tipo = "Nueva muestra";
+      newRegistro.mid = newSample.id;
+      newRegistro.user = req.user.name;
+      console.log(newRegistro);
+      await newRegistro.save();
     }
     catch(error) {
 
