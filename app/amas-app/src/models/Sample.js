@@ -5,6 +5,10 @@ const SampleSchema = new Schema({
     type: String,
     required: true
   }],
+  mid: [{
+    type: Number,
+    required: true
+  }],
   labels: [{
     type: Number,
   }],
