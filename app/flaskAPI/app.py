@@ -2,8 +2,11 @@ import numpy as np
 from flask import Flask, abort, jsonify, request
 import pickle as pickle
 import processing
+from processing import *
+import joblib
 import json
 from datetime import date
+from time import gmtime, strftime
 
 app = Flask(__name__)
 
@@ -18,6 +21,7 @@ def make_predict(model):
     #.transpose() ???
     print (datat)
     print (datat.shape)
+    output = []
     if (model == "default"):
         output = processing.predictDefault(datat)
     else:
@@ -36,20 +40,12 @@ def make_predict(model):
         escaladon = scaler.inverse_transform(y_hat)
         print (escaladon)
         output = escaladon
+        output = output.tolist()
 
-    b = output.tolist()
-    return json.dumps(b)
+    return json.dumps(output)
 
 @app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
 def train_model(model, scaler, preprocessing):
-<<<<<<< HEAD
-    #model = "models/" + model
-    #models = open(model,"rb")
-    #scaler = joblib.load("scaler/" + scaler + ".save" )
-    #regressor = joblib.load(models)
-=======
-    #models = open(model,"rb")
->>>>>>> 35347d65b598423c59fd087c314c2cd8268d91a3
     request_content = request.get_json(force=True)
     data = request_content['espetro']
     labels = request_content['labels']
@@ -58,18 +54,32 @@ def train_model(model, scaler, preprocessing):
     print(data)
     print(labels)
     transformed_data, transformed_labels = processing.transform_data(data, labels, scaler, preprocessing)
-    trained_model, mse, r2, cvs = processing.train_nmodel(data, labels)
-    today = date.today().strftime("%B-%d-%Y,%H:%M")
+    train_model = None
+    if (model == "linear"):
+        train_model = LinearRegression()
+    elif(model == "svr"):
+        train_model = SVR( kernel='linear' )
+    elif(model == "mlp"):
+        train_model = MLPRegressor(hidden_layer_sizes=(10), max_iter=1000, alpha=0.0001,
+                     solver='adam', verbose=10,  random_state=42,tol=0.000000001)
+    else:
+        print("ERROR!")
+    if (model != None):
+        trained_model, mse, r2, cvs = processing.train_nmodel(data, labels, train_model)
+        today = strftime("%B-%d-%Y,%H:%M", gmtime())
 
-    file_name = scaler + "mor_" + today
-    with open('models/' + file_name + '.pkl', 'wb') as f:
-        pickle.dump(trained_model, f)
+        file_name = scaler + _"mor_" + today + "_"
+        with open('models/' + file_name + '.pkl', 'wb') as f:
+            pickle.dump(trained_model, f)
 
-    answer = {
-        "file_name" : file_name,
-        "mse" : mse,
-        "r2" : r2,
-        "cross_val_score" : cvs.tolist()
-    }
-
+        answer = {
+            "file_name" : file_name,
+            "mse" : mse,
+            "r2" : r2,
+            "cross_val_score" : cvs.tolist()
+        }
+    else:
+        answer = {
+            "Error": "Modelo no encontrado."
+        }
     return json.dumps(answer)

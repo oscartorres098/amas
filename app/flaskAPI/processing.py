@@ -30,9 +30,9 @@ def transform_data(data, labels, scaler, preprocessing):
 
     return data, labels
 
-def train_nmodel(data, labels):
+def train_nmodel(data, labels, model):
     x_train, x_test, y_train, y_test = train_test_split( data, labels, test_size = 0.25, random_state = 42 )
-    mor = MultiOutputRegressor( LinearRegression() )
+    mor = MultiOutputRegressor( model )
     mor.fit(x_train, y_train)
     y_pred = mor.predict(x_test)
     mse = mean_squared_error(y_test, y_pred)
@@ -84,26 +84,27 @@ def predictDefault(data):
     mo_scaler = co_scaler = hg_scaler = dr_scaler = MinMaxScaler()
     arena_scaler = arcilla_scaler = ph_scaler = ca_scaler = StandardScaler()
 
-    mo_scaler.min_, mo_scaler.scale = mm_scaler.min_[0], mm_scaler.scale_[0]
-    co_scaler.min_, co_scaler.scale = mm_scaler.min_[1], mm_scaler.scale_[1]
-    hg_scaler.min_, hg_scaler.scale = mm_scaler.min_[5], mm_scaler.scale_[5]
-    dr_scaler.min_, dr_scaler.scale = mm_scaler.min_[6], mm_scaler.scale_[6]
+    print( sd_scaler, " ",sd_scaler.mean_, " ",sd_scaler.var_," ", sd_scaler.scale_ )
+    print( mm_scaler, " ",mm_scaler.min_," ", mm_scaler.scale_," ", mm_scaler.data_min_," ", mm_scaler.data_max_," ", mm_scaler.data_range_ )
+
+
+    mo_scaler.min_, mo_scaler.scale, mo_scaler.data_min_, mo_scaler.data_max_, mo_scaler.data_range_ = mm_scaler.min_[0], mm_scaler.scale_[0], mm_scaler.data_min_[0], mm_scaler.data_max_[0], mm_scaler.data_range_[0]
+    co_scaler.min_, co_scaler.scale, co_scaler.data_min_, co_scaler.data_max_, co_scaler.data_range_ = mm_scaler.min_[1], mm_scaler.scale_[1], mm_scaler.data_min_[1], mm_scaler.data_max_[1], mm_scaler.data_range_[1]
+    hg_scaler.min_, hg_scaler.scale, hg_scaler.data_min_, hg_scaler.data_max_, hg_scaler.data_range_ = mm_scaler.min_[5], mm_scaler.scale_[5], mm_scaler.data_min_[5], mm_scaler.data_max_[5], mm_scaler.data_range_[5]
+    dr_scaler.min_, dr_scaler.scale, dr_scaler.data_min_, dr_scaler.data_max_, dr_scaler.data_range_ = mm_scaler.min_[6], mm_scaler.scale_[6], mm_scaler.data_min_[6], mm_scaler.data_max_[6], mm_scaler.data_range_[6]
     arena_scaler.mean_, arena_scaler.var_ , arena_scaler.scale_ = sd_scaler.mean_[2], sd_scaler.var_[2], sd_scaler.scale_[2]
     arcilla_scaler.mean_, arcilla_scaler.var_ , arcilla_scaler.scale_ = sd_scaler.mean_[3], sd_scaler.var_, sd_scaler.scale_[3]
     ph_scaler.mean_, ph_scaler.var_ , ph_scaler.scale_ = sd_scaler.mean_[7], sd_scaler.var_[7], sd_scaler.scale_[7]
     ca_scaler.mean_, ca_scaler.var_ , ca_scaler.scale_ = sd_scaler.mean_[8], sd_scaler.var_[8], sd_scaler.scale_[8]
 
-    print ("------------------------")
-    print (mo_res.shape)
-    print ("------------------------")
-    mo_res = mo_scaler.inverse_transform([mo_res])
-    co_res = co_scaler.inverse_transform([co_res])
-    arena_res = arena_scaler.inverse_transform([arena_res])
-    arcilla_res = arcilla_scaler.inverse_transform([arcilla_res])
-    hg_res = hg_scaler.inverse_transform([hg_res])
-    dr_res = dr_scaler.inverse_transform([dr_res])
-    ph_res = ph_scaler.inverse_transform([ph_res])
-    ca_res = ca_scaler.inverse_transform([ca_res])
+    mo_res = mo_scaler.inverse_transform([mo_res]).transpose().tolist()
+    co_res = co_scaler.inverse_transform([co_res]).transpose().tolist()
+    arena_res = arena_scaler.inverse_transform([arena_res]).transpose().tolist()
+    arcilla_res = arcilla_scaler.inverse_transform([arcilla_res]).transpose().tolist()
+    hg_res = hg_scaler.inverse_transform([hg_res]).transpose().tolist()
+    dr_res = dr_scaler.inverse_transform([dr_res]).transpose().tolist()
+    ph_res = ph_scaler.inverse_transform([ph_res]).transpose().tolist()
+    ca_res = ca_scaler.inverse_transform([ca_res]).transpose().tolist()
 
     output = []
 
@@ -115,14 +116,13 @@ def predictDefault(data):
         row = []
         row.append(mo_res[i])
         row.append(co_res[i])
-        row.append(arena_res[i])
-        row.append(arcilla_res[i])
+        row.append(arena_res[i][0])
+        row.append(arcilla_res[i][0])
         row.append(hg_res[i])
         row.append(dr_res[i])
-        row.append(ph_res[i])
-        row.append(ca_res[i])
+        row.append(ph_res[i][0])
+        row.append(ca_res[i][0])
         output.append(row)
     #output = np.concatenate((mo_res, co_res, arena_res, arcilla_res, hg_res, dr_res, ph_res, ca_res))
     #output = output.transpose()
-
     return output
