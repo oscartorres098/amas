@@ -12,6 +12,13 @@ from sklearn.model_selection import cross_val_score
 from sklearn.svm import SVR
 from scipy.fftpack import dct
 import joblib
+import math
+
+
+def normalize_ss(min_val, max_val, value):
+    numerador = math.sqrt(value)
+    denom = (max_val - min_val)
+    return (numerador/denom)
 
 def transform_data(data, labels, scaler, preprocessing):
     if (scaler == "minmax"):
@@ -30,16 +37,31 @@ def transform_data(data, labels, scaler, preprocessing):
 
     return data, labels
 
-def train_nmodel(data, labels, model):
+
+def get_metrics(y_test, y_pred, labels, is_std):
+    mse = []
+    r2 = []
+    print ( y_test.shape )
+    for i in range ( 0, y_test.shape[1] ):
+        current_mse = mean_squared_error(y_test.transpose()[i], y_pred.transpose()[i])
+        if (is_std):
+            current_mse = normalize_ss(labels.transpose()[i].min(), labels.transpose()[i].max() , current_mse)
+        mse.append(current_mse)
+        r2.append(r2_score(y_test.transpose()[i], y_pred.transpose()[i]))
+    return mse, r2
+
+
+
+def train_nmodel(data, labels, model, is_std):
     x_train, x_test, y_train, y_test = train_test_split( data, labels, test_size = 0.25, random_state = 42 )
     mor = MultiOutputRegressor( model )
     mor.fit(x_train, y_train)
     y_pred = mor.predict(x_test)
-    mse = mean_squared_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)
+    mse, r2 = get_metrics(y_test, y_pred, labels, is_std)
     cvs = cross_val_score(mor, data, labels, cv=3, scoring='neg_mean_squared_error')
     print (y_pred)
     print (x_train)
+
     return mor, mse, r2, cvs
 
 def predictDefault(data):

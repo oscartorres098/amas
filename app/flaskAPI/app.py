@@ -64,14 +64,18 @@ def train_model(model, scaler, preprocessing):
                      solver='adam', verbose=10,  random_state=42,tol=0.000000001)
     else:
         print("ERROR!")
-    if (model != None):
-        trained_model, mse, r2, cvs = processing.train_nmodel(data, labels, train_model)
+    if (train_model != None):
+        is_std = 0
+
+        if (scaler == "standard"):
+            is_std = 1
+
+        trained_model, mse, r2, cvs = processing.train_nmodel(data, labels, train_model, is_std)
         today = strftime("%B-%d-%Y,%H:%M", gmtime())
 
-        file_name = scaler + _"mor_" + today + "_"
+        file_name = scaler + "_mor_" + today + "_"
         with open('models/' + file_name + '.pkl', 'wb') as f:
             pickle.dump(trained_model, f)
-
         answer = {
             "file_name" : file_name,
             "mse" : mse,
