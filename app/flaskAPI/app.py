@@ -7,6 +7,8 @@ import joblib
 import json
 from datetime import date
 from time import gmtime, strftime
+import base64
+import os
 
 app = Flask(__name__)
 
@@ -74,14 +76,23 @@ def train_model(model, scaler, preprocessing):
         today = strftime("%B-%d-%Y,%H:%M", gmtime())
 
         file_name = scaler + "_mor_" + today + "_"
-        with open('models/' + file_name + '.pkl', 'wb') as f:
+        path = 'models/' + file_name + '.pkl'
+        with open( path, 'wb') as f:
             pickle.dump(trained_model, f)
+        file = open( path, 'rb')
         answer = {
             "file_name" : file_name,
             "mse" : mse,
             "r2" : r2,
-            "cross_val_score" : cvs.tolist()
+            "cross_val_score" : cvs.tolist(),
+            "model": str(base64.b64encode(file.read()), "utf-8")
         }
+        file.close()
+        try:
+            os.remove(path)
+        except OSError as e: # name the Exception `e`
+            print ("Failed with:", e.strerror) # look what it says
+            print ("Error code:", e.code)
     else:
         answer = {
             "Error": "Modelo no encontrado."
