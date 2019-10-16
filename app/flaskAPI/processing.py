@@ -21,12 +21,15 @@ def normalize_ss(min_val, max_val, value):
     return (numerador/denom)
 
 def transform_data(data, labels, scaler, preprocessing):
+    labels_scaler = None
     if (scaler == "minmax"):
         data = MinMaxScaler().fit(data).transform(data)
-        labels = MinMaxScaler().fit(labels).transform(labels)
+        labels_scaler = MinMaxScaler().fit(labels)
+        labels = labels_scaler.transform(labels)
     elif (scaler == "standard"):
         data = StandardScaler().fit(data).transform(data)
-        labels = StandardScaler().fit(labels).transform(labels)
+        labels_scaler = StandardScaler().fit(labels)
+        labels = labels_scaler.transform(labels)
 
     if (preprocessing == "fft"):
         data = np.fft.fft(data)
@@ -35,7 +38,7 @@ def transform_data(data, labels, scaler, preprocessing):
     elif (preprocessing == "dwt"):
         data, data_d = pywt.dwt(data, 'db1')
 
-    return data, labels
+    return data, labels, labels_scaler
 
 
 def get_metrics(y_test, y_pred, labels, is_std):
@@ -129,10 +132,6 @@ def predictDefault(data):
     ca_res = ca_scaler.inverse_transform([ca_res]).transpose().tolist()
 
     output = []
-
-    print("----------------------------")
-    print(len(data))
-    print("----------------------------")
 
     for i in range (len(data)):
         row = []

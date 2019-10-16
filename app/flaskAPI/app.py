@@ -21,29 +21,48 @@ def make_predict(model):
     datat = data['espetro']
     datat = np.asarray(datat)
     #.transpose() ???
-    print (datat)
     print (datat.shape)
     output = []
     if (model == "default"):
         output = processing.predictDefault(datat)
     else:
-        model = "models/" + model
-        models = open(model, "rb")
-        scaler = joblib.load("scaler/scaler.save")
-        clf = joblib.load(models)
+        model_file = base64.b64decode(data['model'])
+        scaler_file = base64.b64decode(data['scaler'])
+        model_path = "models/temp_model.pkl"
+        scaler_path = "scaler/temp_scaler.pkl"
+        with open( model_path, 'wb') as f:
+            f.write(model_file)
+        f.close()
+        with open ( scaler_path, 'wb') as g:
+            g.write(scaler_file)
+        g.close()
 
-        escalado = StandardScaler().fit(datat).transform(datat)
+        models = open(model_path, "rb")
+        scalers = open(scaler_path, "rb")
+        scaler = joblib.load(scalers)
+        clf = joblib.load(models)
+        escalado = None
+        if ( data['scaler_type'] == "std"):
+            escalado = StandardScaler().fit(datat).transform(datat)
+        elif ( data['scaler_type'] == "minmax" ):
+            escalado = MinMaxScaler().fit(datat).transform(datat)
+
         fft_data = np.fft.fft(escalado)
         predict_request =fft_data
         print (predict_request.real)
-        predict_request = np.asarray(predict_request).transpose()
+        predict_request = np.asarray(predict_request)
         y_hat = clf.predict(predict_request.real)
-        print (y_hat)
         escaladon = scaler.inverse_transform(y_hat)
-        print (escaladon)
         output = escaladon
         output = output.tolist()
+        models.close()
 
+        try:
+            os.remove(model_path)
+            os.remove(scaler_path)
+        except OSError as e: # name the Exception `e`
+            print ("Failed with:", e.strerror) # look what it says
+            print ("Error code:", e.code)
     return json.dumps(output)
 
 @app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
@@ -55,7 +74,7 @@ def train_model(model, scaler, preprocessing):
     labels = np.asarray(labels)
     print(data)
     print(labels)
-    transformed_data, transformed_labels = processing.transform_data(data, labels, scaler, preprocessing)
+    transformed_data, transformed_labels, label_scaler = processing.transform_data(data, labels, scaler, preprocessing)
     train_model = None
     if (model == "linear"):
         train_model = LinearRegression()
@@ -76,20 +95,28 @@ def train_model(model, scaler, preprocessing):
         today = strftime("%B-%d-%Y,%H:%M", gmtime())
 
         file_name = scaler + "_mor_" + today + "_"
-        path = 'models/' + file_name + '.pkl'
-        with open( path, 'wb') as f:
+        model_path = 'models/' + file_name + '.pkl'
+        scaler_path = 'scaler/' + scaler + "_" + today + '.pkl'
+        with open( model_path, 'wb') as f:
             pickle.dump(trained_model, f)
-        file = open( path, 'rb')
+        with open( scaler_path, 'wb') as g:
+            pickle.dump(label_scaler, g)
+
+        model_file = open( model_path, 'rb')
+        scaler_file = open( model_path, 'rb')
         answer = {
             "file_name" : file_name,
             "mse" : mse,
             "r2" : r2,
             "cross_val_score" : cvs.tolist(),
-            "model": str(base64.b64encode(file.read()), "utf-8")
+            "model": str(base64.b64encode(model_file.read()), "utf-8"),
+            "scaler": str(base64.b64encode(scaler_file.read()), "utf-8")
         }
-        file.close()
+        model_file.close()
+        scaler_file.close()
         try:
-            os.remove(path)
+            os.remove(model_path)
+            os.remove(scaler_path)
         except OSError as e: # name the Exception `e`
             print ("Failed with:", e.strerror) # look what it says
             print ("Error code:", e.code)
