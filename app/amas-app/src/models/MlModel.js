@@ -10,13 +10,12 @@ const MlModelSchema = new Schema({
   model: {
     type: String
   },
-  rr: {
+  rr: [{
     type: Number,
-    required: true
-  },
-  mse: {
+  }],
+  mse: [{
     type: Number,
-  },
+  }],
   cross_val_score: [{
     type: Number,
   }],
@@ -33,6 +32,12 @@ const MlModelSchema = new Schema({
   user: {
     type: String,
     required: true
+  },
+  modelstr: {
+    type: String
+  },
+  scalerstr: {
+    type: String
   }
 });
 

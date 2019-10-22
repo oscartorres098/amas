@@ -103,6 +103,9 @@
       <form action="/sample/estimate/{{sample.id}}" method="POST" class="form-inline">
   <div class="form-group mx-sm-3 mb-2">
     <select name="modelo" placeholder="rol" class="form-control">
+      {{#each modelo}}
+      <option value="{{modelo.id}}">{{modelo.nombre}}</option>
+      {{/each}}
       <option value="mor.pkl">Modelo ph</option>
       <option value="minmax-fft-svm.pkl">minmax-fft-svm</option>
     </select>
@@ -117,6 +120,7 @@
   </div>
 </div>
 <div class="row">
+  <input type="hidden" value="{{sample.id}}">
 {{#each sample.prediction}}
 <div class="col-md-3 my-2">
     <div class="card">
@@ -129,12 +133,11 @@
           var dato = "{{this}}";
           var modelo = document.getElementById("modelo"+"{{@index}}");
           dato = dato.split(",");
-          modelo.innerHTML = dato[0];
+          modelo.innerHTML = dato[0]; 
         </script>
         <a  style="margin-bottom: 20px;" href="/samples/view/{{_id}}" class="btn btn-success btn-block">Detalles</a>
         <!-- DELETE REQUEST -->
-        <form action="/samples/delete/{{_id}}?_method=DELETE" method="POST">
-          <input type="hidden" name="_method" value="DELETE">
+        <form action="/samples/delete-estimation/{{../sample.id}}/{{@index}}"method="POST">
           <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar</button>
         </form>  
       </div>

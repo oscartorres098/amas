@@ -9,7 +9,6 @@ const { isAdmin } = require('../helpers/auth');
 //Get all models
 router.get("/registros", isAdmin, async (req, res) => {
   const registros = await Registro.find();
-  console.log(registros);
   const view = "actividad";
   res.render("actividad/ver-actividad", { registros, view });
 });

@@ -5,6 +5,7 @@ var request = require('request');
 const Sample = require("../models/Sample");
 const Registro = require("../models/Registro");
 const LastInsert = require("../models/LastInsert");
+const MlModel = require("../models/MlModel");
 // Helpers
 const { isAuthenticated } = require("../helpers/auth");
 const { isAdmin } = require("../helpers/auth");
@@ -147,7 +148,6 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
       newRegistro.tipo = "Nueva muestra";
       newRegistro.mid = newSample.id;
       newRegistro.user = req.user.name;
-      console.log(newRegistro);
       await newRegistro.save();
     }
     catch(error) {
@@ -241,15 +241,28 @@ router.get('/samples/view/:id', isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
   res.render("samples/view-sample", { sample });
 });
+//delete estimantion
+router.post("/samples/delete-estimation/:id/:index", isAuthenticated, async (req, res) => {
+  const sample = await Sample.findById(req.params.id);
+  console.log(sample);
+    sample.prediction.splice(req.params.index, 1);
+    await Sample.findByIdAndUpdate(req.params.id, sample);
+    req.flash("success_msg", "Estimación eliminda");
+    res.redirect("/samples/view/"+req.params.id);
+});
 // Estimate sample
 router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
   const {modelo} = req.body;
+  const model = await Sample.findById(req.body.modelo);
   const espectro = sample.espectro[0].split(",").map(Number);
+  const modelstr = model.modelstr;
+  const scaler = model.scalerstr;
   const formData = JSON.stringify({"espetro": espectro});
   const urls = 'http://localhost:5000/api/' + modelo;
   const id = req.params.id;
-
+  const scaler_typestr = model.scaler;
+  /*
   request.post({
     url: urls,
     form: formData
@@ -263,8 +276,46 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
       }
     }
     res.render("samples/view-caract", { estimacion, err, modelo, id });
-  });
+  });*/
+  try {
+    var options = {
+      method: 'POST',
+      uri: 'http://localhost:5000/api/model',
+      body: {
+        model: modelstr,
+        scaler: scalerstr,
+        scaler_type: scaler_typestr
+      },
+
+      json: true, // Automatically stringifies the body to JSON
+    };
+    try {
+      rp(options)
+        .then(async function (parsedBody) {
+          try {
+            console.log(parsedBody)
+            mlModel.name = parsedBody.file_name;
+            mlModel.mse = parsedBody.mse;
+            mlModel.rr = parsedBody.r2;
+            mlModel.cross_val_score = parsedBody.cross_val_score;
+            mlModel.modelstr = parsedBody.model;
+            mlModel.scalerstr = parsedBody.scaler;
+            await mlModel.save();
+          } catch (err) {
+            console.log(err);
+          }
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    } catch (error) {
+      res.render("mlmodels/create-model", error);
+    }
+  } catch (err) {
+    console.log(err);
+  }
 });
+
 router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   var sample = await Sample.findById(req.params.id);
   var {estimacion, model} = req.body;
@@ -273,4 +324,5 @@ router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   await Sample.findByIdAndUpdate(req.params.id, sample);
   res.redirect("samples/view-sample", { sample });
 });
+
 module.exports = router;
