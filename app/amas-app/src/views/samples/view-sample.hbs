@@ -124,70 +124,70 @@
     <div class="card">
       <div class="card-body">
           <div class="row">
-    <div class="col-md-4">
-      <p>Modelo:</p>
-        <p>MO.x:</p>
-        <p>CO.x:</p>
-        <p>Arena:</p>
-        <p>Arcilla:</p>
-        <p>Limo:</p>
-        <p>Dr:</p>
-        <p>pH:</p>
-        <p>Ca:</p>
-        <p>Mg:</p>
-        <p>K:</p>
-        <p>Na:</p>
-    </div>
-    <div class="col-md-8">
-        <p id="modelo{{@index}}"></p>
-        <p id="MOx{{@index}}"></p>
-        <p id="COx{{@index}}"></p>
-        <p id="Arena{{@index}}"></p>
-        <p id="Arcilla{{@index}}"></p>
-        <p id="Limo{{@index}}"></p>
-        <p id="Dr{{@index}}"></p>
-        <p id="pH{{@index}}"></p>
-        <p id="Ca{{@index}}"></p>
-        <p id="Mg{{@index}}"></p>
-        <p id="K{{@index}}"></p>
-        <p id="Na{{@index}}"></p>
-        <script>
-          var dato = "{{this}}";
-          var modelo = document.getElementById("modelo"+"{{@index}}");
-          var MOx = document.getElementById("MOx"+"{{@index}}");
-          var COx = document.getElementById("COx"+"{{@index}}");
-          var Arena = document.getElementById("Arena"+"{{@index}}");
-          var Arcilla = document.getElementById("Arcilla"+"{{@index}}");
-          var Limo = document.getElementById("Limo"+"{{@index}}");
+            <div class="col-md-3">
+              <p>Model:</p>
+                <p>MO.x:</p>
+                <p>CO.x:</p>
+                <p>Arena:</p>
+                <p>Arcilla:</p>
+                <p>Limo:</p>
+                <p>Dr:</p>
+                <p>pH:</p>
+                <p>Ca:</p>
+                <p>Mg:</p>
+                <p>K:</p>
+                <p>Na:</p>
+            </div>
+            <div class="col-md-9">
+                <p id="modelo{{@index}}"></p>
+                <p id="MOx{{@index}}"></p>
+                <p id="COx{{@index}}"></p>
+                <p id="Arena{{@index}}"></p>
+                <p id="Arcilla{{@index}}"></p>
+                <p id="Limo{{@index}}"></p>
+                <p id="Dr{{@index}}"></p>
+                <p id="pH{{@index}}"></p>
+                <p id="Ca{{@index}}"></p>
+                <p id="Mg{{@index}}"></p>
+                <p id="K{{@index}}"></p>
+                <p id="Na{{@index}}"></p>
+                <script>
+                  var dato = "{{this}}";
+                  var modelo = document.getElementById("modelo"+"{{@index}}");
+                  var MOx = document.getElementById("MOx"+"{{@index}}");
+                  var COx = document.getElementById("COx"+"{{@index}}");
+                  var Arena = document.getElementById("Arena"+"{{@index}}");
+                  var Arcilla = document.getElementById("Arcilla"+"{{@index}}");
+                  var Limo = document.getElementById("Limo"+"{{@index}}");
 
-          var Dr = document.getElementById("Dr"+"{{@index}}");
-          var pH = document.getElementById("pH"+"{{@index}}");
-          var Ca = document.getElementById("Ca"+"{{@index}}");
-          var Mg = document.getElementById("Mg"+"{{@index}}");
-          var K = document.getElementById("K"+"{{@index}}");
-          var Na = document.getElementById("Na"+"{{@index}}");
-          dato = dato.split(",");
-          modelo.innerHTML = dato[0];
-          MOx.innerHTML = dato[1];
-          COx.innerHTML = dato[2];
-          Arena.innerHTML = dato[3];
-          Arcilla.innerHTML = dato[4];
-          Limo.innerHTML = dato[5];
-          
-          Dr.innerHTML = dato[8];
-          pH.innerHTML = dato[9];
-          Ca.innerHTML = dato[10];
-          Mg.innerHTML = dato[11];
-          K.innerHTML = dato[12];
-          Na.innerHTML = dato[13];
-        </script>
-        </div>
+                  var Dr = document.getElementById("Dr"+"{{@index}}");
+                  var pH = document.getElementById("pH"+"{{@index}}");
+                  var Ca = document.getElementById("Ca"+"{{@index}}");
+                  var Mg = document.getElementById("Mg"+"{{@index}}");
+                  var K = document.getElementById("K"+"{{@index}}");
+                  var Na = document.getElementById("Na"+"{{@index}}");
+                  dato = dato.split(",");
+                  modelo.innerHTML = dato[0];
+                  MOx.innerHTML = dato[1];
+                  COx.innerHTML = dato[2];
+                  Arena.innerHTML = dato[3];
+                  Arcilla.innerHTML = dato[4];
+                  Limo.innerHTML = dato[5];
+                  Dr.innerHTML = dato[8];
+                  pH.innerHTML = dato[9];
+                  Ca.innerHTML = dato[10];
+                  Mg.innerHTML = dato[11];
+                  K.innerHTML = dato[12];
+                  Na.innerHTML = dato[13];
+                </script>
+                </div>
         <a  style="margin-bottom: 20px;" href="/samples/view/{{_id}}" class="btn btn-success btn-block">Detalles</a>
         <!-- DELETE REQUEST -->
         <form action="/samples/delete-estimation/{{../sample.id}}/{{@index}}"method="POST">
-          <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar</button>
+          <button type="submit" class="btn btn-danger btn-block">Eliminar</button>
         </form>  
-    </div>
+      </div>
+      </div>
     </div>
   </div>
   

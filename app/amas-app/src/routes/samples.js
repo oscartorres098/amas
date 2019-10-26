@@ -264,8 +264,8 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const espectro = [];
   espectro.push(sample.espectro[0].split(",").map(Number));
   const modelname = model.nombre;
-  var modelstr =fs.readFileSync('../amas-app/src/public/'+modelname+'.txt');
-  var scalerstr = fs.readFileSync('../amas-app/src/public/'+modelname+'-scaler.txt');
+  var modelstr =fs.readFileSync('../amas-app/src/public/models/'+modelname+'.txt');
+  var scalerstr = fs.readFileSync('../amas-app/src/public/models/'+modelname+'-scaler.txt');
   const scaler_typestr = model.scaler;
   try {
     var options = {
@@ -301,16 +301,6 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
     console.log(err);
   }
 });
-function leerArchivo(ruta){
-fs.readFile(ruta, 'utf-8', (err, data) => {
-  if(err) {
-    console.log('error: ', err);
-  } else {
-    return "data.toString()";
-  }
-  return "error";
-});
-}
 router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   var sample = await Sample.findById(req.params.id);
   var {estimacion, modelo, modelid} = req.body;

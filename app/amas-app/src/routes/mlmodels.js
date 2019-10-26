@@ -51,20 +51,22 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
       rp(options)
         .then(async function (parsedBody) {
           try {
-            const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
+            const iMid = await LastInsert.findById("5d93f1b3a6f4271c900849c0");
+            //const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
             mid = iMid.model;
             iMid.sample = parseInt(mid)+1;
-            await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
+            //await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
+            await LastInsert.findByIdAndUpdate("5d93f1b3a6f4271c900849c0", iMid);
             mlModel.nombre = name+"-"+scaler+"-"+model+"-"+preprocessing+"-"+mid;
             mlModel.name = parsedBody.file_name;
             mlModel.mse = parsedBody.mse;
             mlModel.rr = parsedBody.r2;
             mlModel.cross_val_score = parsedBody.cross_val_score;
-            fs.writeFile('../amas-app/src/public/'+mlModel.nombre+'.txt', parsedBody.model, error => {
+            fs.writeFile('../amas-app/src/public/models/'+mlModel.nombre+'.txt', parsedBody.model, error => {
               if (error)
                 console.log(error);
             });
-            fs.writeFile('../amas-app/src/public/'+mlModel.nombre+'-scaler.txt', parsedBody.scaler, error => {
+            fs.writeFile('../amas-app/src/public/models/'+mlModel.nombre+'-scaler.txt', parsedBody.scaler, error => {
               if (error)
                 console.log(error);
             });
@@ -92,8 +94,21 @@ router.get("/models/view-mode/:id", isAuthenticated, async (req, res) => {
 });
 // Delete Sample
 router.delete('/mlmodels/delete/:id', isAuthenticated, async (req, res) => {
-  await Sample.findByIdAndDelete(req.params.id);
-  req.flash('success_msg', 'Muestra eliminada correctamente');
-  res.redirect('/samples');
+  var model = await MlModel.findById(req.params.id); 
+  fs.unlink('../amas-app/src/public/models/'+model.nombre+".txt", function(err) {
+    if (err) throw err;
+  
+    console.log('file deleted');
+  });
+  fs.unlink('../amas-app/src/public/models/'+model.nombre+"-scaler.txt", function(err) {
+    if (err) throw err;
+  
+    console.log('file deleted');
+  });
+  //fs.unlinkSync('../amas-app/src/public/models/'+model.name+".txt");
+  //fs.unlinkSync('../amas-app/src/public/models/'+model.nombre+"-scaler.txt");
+  await MlModel.findByIdAndDelete(req.params.id);
+  req.flash('success_msg', 'Modelo eliminado correctamente');
+  res.redirect('/models');
 });
 module.exports = router;

@@ -120,7 +120,7 @@ def train_model(model, scaler, preprocessing):
             os.remove(scaler_path)
         except OSError as e: # name the Exception `e`
             print ("Failed with:", e.strerror) # look what it says
-            print ("Error code:", e.code)
+            #print ("Error code:", e.code)
     else:
         answer = {
             "Error": "Modelo no encontrado."
