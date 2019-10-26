@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 var request = require('request');
-
+const fs=require('fs');
 const Sample = require("../models/Sample");
 const Registro = require("../models/Registro");
 const LastInsert = require("../models/LastInsert");
 const MlModel = require("../models/MlModel");
+var rp = require('request-promise');
 // Helpers
 const { isAuthenticated } = require("../helpers/auth");
 const { isAdmin } = require("../helpers/auth");
@@ -13,13 +14,13 @@ const { isAdmin } = require("../helpers/auth");
 //Get all samples
 router.get("/samples", isAuthenticated, async (req, res) => {
   const samples = await Sample.find();
-  const view = "caract";
-
+  const view = "sample";
   res.render("samples/all-samples", { samples, view });
 });
 //Create new sample
 router.get("/samples/add", isAuthenticated, (req, res) => {
-  res.render("samples/new-sample");
+  var view = "sample";
+  res.render("samples/new-sample", {view});
 });
 router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
   const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, details } = req.body;
@@ -92,7 +93,8 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
 });
 //Create new samples form file
 router.get("/samples/add-frfile", isAuthenticated, (req, res) => {
-  res.render("samples/new-sample-frfile");
+  var view = "sample";
+  res.render("samples/new-sample-frfile", {view});
 });
 router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
   const errors = [];
@@ -172,7 +174,8 @@ router.get("/samples/edit/:id", isAuthenticated, async (req, res) => {
     req.flash("error_msg", "No autrizado");
     return res.redirect("/samples");
   }
-  res.render("samples/edit-sample", { sample });
+  var view = "sample";
+  res.render("samples/edit-sample", { sample, view });
 });
 
 router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
@@ -239,7 +242,9 @@ router.delete('/samples/delete/:id', isAuthenticated, async (req, res) => {
 // View Sample
 router.get('/samples/view/:id', isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
-  res.render("samples/view-sample", { sample });
+  const modelo = await MlModel.find();
+  const view = "sample";
+  res.render("samples/view-sample", { sample, modelo, view });
 });
 //delete estimantion
 router.post("/samples/delete-estimation/:id/:index", isAuthenticated, async (req, res) => {
@@ -252,55 +257,36 @@ router.post("/samples/delete-estimation/:id/:index", isAuthenticated, async (req
 });
 // Estimate sample
 router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
+  const sampleid=req.params.id;
+  const modelid=req.body.modelo;
   const sample = await Sample.findById(req.params.id);
-  const {modelo} = req.body;
-  const model = await Sample.findById(req.body.modelo);
-  const espectro = sample.espectro[0].split(",").map(Number);
-  const modelstr = model.modelstr;
-  const scaler = model.scalerstr;
-  const formData = JSON.stringify({"espetro": espectro});
-  const urls = 'http://localhost:5000/api/' + modelo;
-  const id = req.params.id;
+  const model = await MlModel.findById(req.body.modelo);
+  const espectro = [];
+  espectro.push(sample.espectro[0].split(",").map(Number));
+  const modelname = model.nombre;
+  var modelstr =fs.readFileSync('../amas-app/src/public/'+modelname+'.txt');
+  var scalerstr = fs.readFileSync('../amas-app/src/public/'+modelname+'-scaler.txt');
   const scaler_typestr = model.scaler;
-  /*
-  request.post({
-    url: urls,
-    form: formData
-  },
-  function (err, httpResponse, body) {
-    if(!err){
-      try{
-        var estimacion = JSON.parse(body);
-      }catch(err){
-        console.log(err);
-      }
-    }
-    res.render("samples/view-caract", { estimacion, err, modelo, id });
-  });*/
   try {
     var options = {
       method: 'POST',
       uri: 'http://localhost:5000/api/model',
       body: {
-        model: modelstr,
-        scaler: scalerstr,
-        scaler_type: scaler_typestr
+        model: modelstr.toString(),
+        scaler: scalerstr.toString(),
+        scaler_type: scaler_typestr,
+        espetro: espectro
       },
 
-      json: true, // Automatically stringifies the body to JSON
+      json: true,
     };
     try {
       rp(options)
         .then(async function (parsedBody) {
           try {
-            console.log(parsedBody)
-            mlModel.name = parsedBody.file_name;
-            mlModel.mse = parsedBody.mse;
-            mlModel.rr = parsedBody.r2;
-            mlModel.cross_val_score = parsedBody.cross_val_score;
-            mlModel.modelstr = parsedBody.model;
-            mlModel.scalerstr = parsedBody.scaler;
-            await mlModel.save();
+            estimacion = parsedBody[0];
+            console.log(estimacion)
+            res.render("samples/view-caract", { estimacion, modelid, sampleid, modelname });
           } catch (err) {
             console.log(err);
           }
@@ -309,20 +295,29 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
           console.log(err);
         });
     } catch (error) {
-      res.render("mlmodels/create-model", error);
+      console.log(error);
     }
   } catch (err) {
     console.log(err);
   }
 });
-
+function leerArchivo(ruta){
+fs.readFile(ruta, 'utf-8', (err, data) => {
+  if(err) {
+    console.log('error: ', err);
+  } else {
+    return "data.toString()";
+  }
+  return "error";
+});
+}
 router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   var sample = await Sample.findById(req.params.id);
-  var {estimacion, model} = req.body;
-  estimacion = model + "," + estimacion;
+  var {estimacion, modelo, modelid} = req.body;
+  estimacion = modelo + "," + estimacion + "," + modelid;
   sample.prediction.push(estimacion);
   await Sample.findByIdAndUpdate(req.params.id, sample);
-  res.redirect("samples/view-sample", { sample });
+  res.redirect("../../samples/view/"+req.params.id);
 });
 
 module.exports = router;

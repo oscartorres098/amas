@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const MlModelSchema = new Schema({
+  nombre: {
+    type: String
+  },
   scaler: {
     type: String
   },

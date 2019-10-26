@@ -33,10 +33,13 @@
     </div>
     
   </div>
-  <form action="/sample/save-estimation/{{id}}?_method=PUT" method="POST">
+  <form action="/sample/save-estimation/{{sampleid}}?_method=PUT" method="POST">
   <input type="hidden" name="_method" value="PUT">
   <input type="hidden" name="estimacion" value="{{estimacion}}">
-  <input type="hidden" name="model" value="{{modelo}}">
+  <input type="hidden" name="model" value="{{modelid}}">
+  <input type="hidden" name="modelo" value="{{modelname}}">
+  
+
   <div class="container">
   <div class="row">
     <button class="btn btn-success" type="submit">

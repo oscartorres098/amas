@@ -7,10 +7,10 @@
       <div class="card-body">
         <form action="/models/new-model" method="POST">
           <div class="form-group">
-            <input type="text" class="form-control" name="name" placeholder="Nombre del modelo" value="{{name}}">
+            <input type="text" class="form-control" name="name" placeholder="Nombre del modelo" value="">
           </div>
           <div class="form-group">
-            <select name="scalee" class="form-control">
+            <select name="scaler" class="form-control">
               <option value="minmax">Minimos y maximos</option>
               <option value="standard">Estandar</option>
             </select>
@@ -28,9 +28,6 @@
               <option value="mlp">Redes neuronales</option>
               <option value="linear">Regresión lineal</option>
             </select>
-          </div>
-          <div class="form-group">
-          <input type="file">
           </div>
           <button class="btn btn-primary btn-block">
             Entrenar

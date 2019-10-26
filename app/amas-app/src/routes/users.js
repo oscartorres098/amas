@@ -59,7 +59,8 @@ router.get('/users/logout', (req, res) => {
 //Ver Usuarios
 router.get('/users', isAdmin, async (req, res) => {
   const users = await User.find();
-  res.render('users/all-users', { users });
+  var view = "users"
+  res.render('users/all-users', { users, view });
 });
 
 

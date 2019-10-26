@@ -49,20 +49,21 @@ def make_predict(model):
 
         fft_data = np.fft.fft(escalado)
         predict_request =fft_data
-        print (predict_request.real)
+        #print (predict_request.real)
         predict_request = np.asarray(predict_request)
         y_hat = clf.predict(predict_request.real)
         escaladon = scaler.inverse_transform(y_hat)
         output = escaladon
         output = output.tolist()
         models.close()
-
+        scalers.close()
         try:
             os.remove(model_path)
             os.remove(scaler_path)
         except OSError as e: # name the Exception `e`
             print ("Failed with:", e.strerror) # look what it says
-            print ("Error code:", e.code)
+            #print ("Error code:", e.code)
+
     return json.dumps(output)
 
 @app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
@@ -103,7 +104,7 @@ def train_model(model, scaler, preprocessing):
             pickle.dump(label_scaler, g)
 
         model_file = open( model_path, 'rb')
-        scaler_file = open( model_path, 'rb')
+        scaler_file = open( scaler_path, 'rb')
         answer = {
             "file_name" : file_name,
             "mse" : mse,
