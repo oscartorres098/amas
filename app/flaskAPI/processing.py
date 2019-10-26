@@ -20,7 +20,7 @@ def normalize_ss(min_val, max_val, value):
     denom = (max_val - min_val)
     return (numerador/denom)
 
-def transform_data(data, labels, scaler, preprocessing):
+def transform_data(data, labels, scaler, preprocessing, derivable):
     labels_scaler = None
     if (scaler == "minmax"):
         data = MinMaxScaler().fit(data).transform(data)
@@ -33,10 +33,17 @@ def transform_data(data, labels, scaler, preprocessing):
 
     if (preprocessing == "fft"):
         data = np.fft.fft(data)
+        data = data.real
     elif (preprocessing == "dct"):
         data = dct(data)
     elif (preprocessing == "dwt"):
         data, data_d = pywt.dwt(data, 'db1')
+
+    if ( derivable = "True" ):
+        d1 = np.diff(data)
+        d2 = np.diff(data, n=2)
+        data = np.concatenate((data, d1))
+        data = np.concatenate((data, d2))
 
     return data, labels, labels_scaler
 
