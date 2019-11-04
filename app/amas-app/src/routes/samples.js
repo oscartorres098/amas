@@ -267,6 +267,7 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   var modelstr =fs.readFileSync('../amas-app/src/public/models/'+modelname+'.txt');
   var scalerstr = fs.readFileSync('../amas-app/src/public/models/'+modelname+'-scaler.txt');
   const scaler_typestr = model.scaler;
+  console.log(scaler_typestr);
   try {
     var options = {
       method: 'POST',
@@ -275,7 +276,9 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
         model: modelstr.toString(),
         scaler: scalerstr.toString(),
         scaler_type: scaler_typestr,
-        espetro: espectro
+        espetro: espectro,
+        transform_type: model.preprocessing,
+        derivable: "False"
       },
 
       json: true,
@@ -285,20 +288,20 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
         .then(async function (parsedBody) {
           try {
             estimacion = parsedBody[0];
-            console.log(estimacion)
+            //console.log(estimacion)
             res.render("samples/view-caract", { estimacion, modelid, sampleid, modelname });
           } catch (err) {
-            console.log(err);
+            //console.log(err);
           }
         })
         .catch(function (err) {
-          console.log(err);
+          //console.log(err);
         });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   } catch (err) {
-    console.log(err);
+    //console.log(err);
   }
 });
 router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {

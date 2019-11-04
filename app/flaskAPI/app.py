@@ -46,7 +46,7 @@ def make_predict(model):
             escalado = StandardScaler().fit(datat).transform(datat)
         elif ( data['scaler_type'] == "minmax" ):
             escalado = MinMaxScaler().fit(datat).transform(datat)
-
+        print (data['scaler_type'])
         proc_data = escalado
         if ( data['transform_type'] == "fft" ):
             proc_data = np.fft.fft(escalado)
@@ -59,10 +59,10 @@ def make_predict(model):
         if ( data['derivable'] == "True" ):
             d1 = np.diff(derivable)
             d2 = np.diff(derivable, n=2)
-            derivable = np.concatenate((derivable, d1))
-            derivable = np.concatenate((derivable, d2))
+            derivable = np.concatenate((derivable, d1), axis = 1)
+            derivable = np.concatenate((derivable, d2), axis = 1)
 
-        predict_request = transformed_data
+        predict_request = derivable
 
         predict_request = np.asarray(predict_request)
         y_hat = clf.predict(predict_request.real)

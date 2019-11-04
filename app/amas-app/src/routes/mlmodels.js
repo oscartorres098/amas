@@ -36,10 +36,11 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
   mlModel.scaler = scaler;
   mlModel.preprocessing = preprocessing;
   mlModel.user = req.user.id;
+  derivable = "False";
   try {
     var options = {
       method: 'POST',
-      uri: 'http://localhost:5000/api/train/' + model + '/' + scaler + '/' + preprocessing,
+      uri: 'http://localhost:5000/api/train/' + model + '/' + scaler + '/' + preprocessing + '/' + derivable,
       body: {
         espetro: spectres,
         labels: etiquetas
