@@ -381,6 +381,7 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const espectro = [];
   espectro.push(sample.espectro[0].split(",").map(Number));
   const modelname = model.nombre;
+  const deriv = model.derivable;
   var modelstr =fs.readFileSync('../amas-app/src/public/models/'+modelname+'.txt');
   var scalerstr = fs.readFileSync('../amas-app/src/public/models/'+modelname+'-scaler.txt');
   const scaler_typestr = model.scaler;
@@ -395,7 +396,7 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
         scaler_type: scaler_typestr,
         espetro: espectro,
         transform_type: model.preprocessing,
-        derivable: "False"
+        derivable: "True"
       },
 
       json: true,

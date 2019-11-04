@@ -18,6 +18,9 @@ const MlModelSchema = new Schema({
   nombre: {
     type: String
   },
+  derivable: {
+    type: String
+  },
   scaler: {
     type: String
   },

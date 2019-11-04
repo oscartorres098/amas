@@ -61,7 +61,7 @@ router.get("/models/train", isAuthenticated, (req, res) => {
   res.render("mlmodels/create-model", {view});
 });
 router.post("/models/new-model", isAuthenticated, async (req, res) => {
-  const { model, scaler, preprocessing, name } = req.body;
+  const { check, model, scaler, preprocessing, name } = req.body;
   const errors = [];
   const spectres = [];
   const etiquetas = [];
@@ -77,7 +77,13 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
   mlModel.scaler = scaler;
   mlModel.preprocessing = preprocessing;
   mlModel.user = req.user.id;
-  derivable = "False";
+  if(check){
+  derivable = "True";
+  mlModel.derivable = derivable;
+  }else{
+    derivable = "False";
+    mlModel.derivable = derivable;
+  }
   try {
     var options = {
       method: 'POST',
@@ -93,12 +99,12 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
       rp(options)
         .then(async function (parsedBody) {
           try {
-            const iMid = await LastInsert.findById("5d93f1b3a6f4271c900849c0");
-            //const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
+            //const iMid = await LastInsert.findById("5d93f1b3a6f4271c900849c0");
+            const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
             mid = iMid.model;
             iMid.sample = parseInt(mid)+1;
-            //await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
-            await LastInsert.findByIdAndUpdate("5d93f1b3a6f4271c900849c0", iMid);
+            await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
+            //await LastInsert.findByIdAndUpdate("5d93f1b3a6f4271c900849c0", iMid);
             mlModel.nombre = name+"-"+scaler+"-"+model+"-"+preprocessing+"-"+mid;
             mlModel.name = parsedBody.file_name;
             mlModel.mse = parsedBody.mse;
