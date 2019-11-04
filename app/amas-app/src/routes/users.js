@@ -1,3 +1,18 @@
+/** Express router providing user related routes
+ * @module routers/users
+ * @requires express
+ */
+
+/**
+ * express module
+ * @const
+ */
+/**
+ * Express router to mount user related functions on.
+ * @type {object}
+ * @const
+ * @namespace usersRouter
+ */
 const router = require('express').Router();
 const passport = require('passport');
 
@@ -6,12 +21,20 @@ const User = require('../models/User');
 
 //helpers
 const { isAdmin } = require('../helpers/auth');
-
+/**
+ * Lets admin create a user
+ * @name /users/signup
+ * @function
+ * @memberof module:routers/users~usersRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAdmin - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get('/users/signup', isAdmin, (req, res) => {
   const view = "users";
   res.render('users/signup', { view });
 });
-
 router.post('/users/signup',isAdmin, async (req, res) => {
   let errors = [];
   const { name, email, password, confirm_password, rol } = req.body;
@@ -39,7 +62,15 @@ router.post('/users/signup',isAdmin, async (req, res) => {
     }
   }
 });
-
+/**
+ * Autrhenticate an user
+ * @name /users/signin
+ * @function
+ * @memberof module:routers/users~usersRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ */
 router.get('/users/signin', (req, res) => {
   res.render('users/signin');
 });
@@ -49,7 +80,18 @@ router.post('/users/signin', passport.authenticate('local', {
   failureRedirect: '/users/signin',
   failureFlash: true
 }));
-
+router.get('/users/signin', (req, res) => {
+  res.render('users/signin');
+});
+/**
+ * Close user sesion
+ * @name/users/logout
+ * @function
+ * @memberof module:routers/users~usersRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ */
 router.get('/users/logout', (req, res) => {
   req.logout();
   req.flash('success_msg', 'Has cerrado sesion');
@@ -57,6 +99,16 @@ router.get('/users/logout', (req, res) => {
 });
 
 //Ver Usuarios
+/**
+ * Return all users
+ * @name /users/signin
+ * @function
+ * @memberof module:routers/users~usersRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAdmin - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get('/users', isAdmin, async (req, res) => {
   const users = await User.find();
   var view = "users"

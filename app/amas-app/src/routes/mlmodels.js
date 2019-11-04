@@ -1,5 +1,26 @@
+/** Express router providing general app related routes
+ * @module routers/mlmodels
+ * @requires express
+ */
+
+/**
+ * express module
+ * @const
+ */
 const express = require('express');
+/**
+ * Express router to mount samples related functions on.
+ * @type {object}
+ * @const
+ * @namespace mlmodelsRouter
+ */
 const router = express.Router();
+/**
+ * Express proxy to comunicate with flask api.
+ * @type {object}
+ * @const
+ * @namespace mlmodelsProxy
+ */
 var rp = require('request-promise');
 const Sample = require('../models/Sample');
 const LastInsert = require("../models/LastInsert");
@@ -9,12 +30,32 @@ const fs=require('fs');
 const { isAuthenticated } = require('../helpers/auth');
 const { isAdmin } = require('../helpers/auth');
 //Get all models
+/**
+ * Get all models trained om spftware
+ * @name /models
+ * @function
+ * @memberof module:routers/mlmodels~mlmodelsRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get("/models", isAuthenticated, async (req, res) => {
   const models = await MlModel.find();
   const view = "model";
   res.render("mlmodels/all-models", { models, view });
 });
-//Create new model
+//Create new model in route mlmodels/create-model
+/**
+ * Train new model from api flask 
+ * @name /models/train
+ * @function
+ * @memberof module:routers/mlmodels~mlmodelsProxy
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get("/models/train", isAuthenticated, (req, res) => {
   const view = "model";
   res.render("mlmodels/create-model", {view});
@@ -85,12 +126,32 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
   res.redirect("../models");
 });
 //Get a model
+/**
+ * Show stadistic of a specific model
+ * @name /models/view-mode/:id
+ * @function
+ * @memberof module:routers/mlmodels~mlmodelsProxy
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get("/models/view-mode/:id", isAuthenticated, async (req, res) => {
   const model = await MlModel.findById(req.params.id);
   const view = "model";
   res.render("mlmodels/view-model", { model, view });
 });
 // Delete Sample
+/**
+ * Delete a specific model
+ * @name /mlmodels/delete/:id
+ * @function
+ * @memberof module:routers/mlmodels~mlmodelsProxy
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.delete('/mlmodels/delete/:id', isAuthenticated, async (req, res) => {
   await Sample.findByIdAndDelete(req.params.id);
   req.flash('success_msg', 'Muestra eliminada correctamente');
