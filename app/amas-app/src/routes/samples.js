@@ -396,7 +396,7 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
         scaler_type: scaler_typestr,
         espetro: espectro,
         transform_type: model.preprocessing,
-        derivable: "True"
+        derivable: deriv
       },
 
       json: true,
