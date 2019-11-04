@@ -48,14 +48,16 @@ def make_predict(model):
             escalado = StandardScaler().fit(datat).transform(datat)
         elif ( data['scaler_type'] == "minmax" ):
             escalado = MinMaxScaler().fit(datat).transform(datat)
+
         print (data['scaler_type'])
+
         proc_data = escalado
         if ( data['transform_type'] == "fft" ):
             proc_data = np.fft.fft(escalado)
         elif ( data['transform_type'] == "dct" ):
-            proc_data =  dct(data)
+            proc_data =  dct(escalado)
         elif ( data['transform_type'] == "dwt" ):
-            proc_data, data_d = pywt.dwt(data, 'db1')
+            proc_data, data_d = pywt.dwt(escalado, 'db1')
 
         derivable = proc_data
         if ( data['derivable'] == "True" ):
