@@ -42,14 +42,28 @@ def make_predict(model):
         scaler = joblib.load(scalers)
         clf = joblib.load(models)
         escalado = None
-        if ( data['scaler_type'] == "std"):
+        if ( data['scaler_type'] == "standard"):
             escalado = StandardScaler().fit(datat).transform(datat)
         elif ( data['scaler_type'] == "minmax" ):
             escalado = MinMaxScaler().fit(datat).transform(datat)
+        print (data['scaler_type'])
+        proc_data = escalado
+        if ( data['transform_type'] == "fft" ):
+            proc_data = np.fft.fft(escalado)
+        elif ( data['transform_type'] == "dct" ):
+            proc_data =  dct(data)
+        elif ( data['transform_type'] == "dwt" ):
+            proc_data, data_d = pywt.dwt(data, 'db1')
 
-        fft_data = np.fft.fft(escalado)
-        predict_request =fft_data
-        #print (predict_request.real)
+        derivable = proc_data
+        if ( data['derivable'] == "True" ):
+            d1 = np.diff(derivable)
+            d2 = np.diff(derivable, n=2)
+            derivable = np.concatenate((derivable, d1), axis = 1)
+            derivable = np.concatenate((derivable, d2), axis = 1)
+
+        predict_request = derivable
+
         predict_request = np.asarray(predict_request)
         y_hat = clf.predict(predict_request.real)
         escaladon = scaler.inverse_transform(y_hat)
@@ -66,8 +80,8 @@ def make_predict(model):
 
     return json.dumps(output)
 
-@app.route('/api/train/<model>/<scaler>/<preprocessing>', methods=['POST'])
-def train_model(model, scaler, preprocessing):
+@app.route('/api/train/<model>/<scaler>/<preprocessing>/<derivable>', methods=['POST'])
+def train_model(model, scaler, preprocessing, derivable):
     request_content = request.get_json(force=True)
     data = request_content['espetro']
     labels = request_content['labels']
@@ -75,7 +89,7 @@ def train_model(model, scaler, preprocessing):
     labels = np.asarray(labels)
     print(data)
     print(labels)
-    transformed_data, transformed_labels, label_scaler = processing.transform_data(data, labels, scaler, preprocessing)
+    transformed_data, transformed_labels, label_scaler = processing.transform_data(data, labels, scaler, preprocessing, derivable)
     train_model = None
     if (model == "linear"):
         train_model = LinearRegression()
@@ -111,7 +125,8 @@ def train_model(model, scaler, preprocessing):
             "r2" : r2,
             "cross_val_score" : cvs.tolist(),
             "model": str(base64.b64encode(model_file.read()), "utf-8"),
-            "scaler": str(base64.b64encode(scaler_file.read()), "utf-8")
+            "scaler": str(base64.b64encode(scaler_file.read()), "utf-8"),
+            "derivable": derivable
         }
         model_file.close()
         scaler_file.close()
@@ -120,7 +135,7 @@ def train_model(model, scaler, preprocessing):
             os.remove(scaler_path)
         except OSError as e: # name the Exception `e`
             print ("Failed with:", e.strerror) # look what it says
-            print ("Error code:", e.code)
+            #print ("Error code:", e.code)
     else:
         answer = {
             "Error": "Modelo no encontrado."

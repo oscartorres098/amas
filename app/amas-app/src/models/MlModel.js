@@ -49,12 +49,6 @@ const MlModelSchema = new Schema({
   user: {
     type: String,
     required: true
-  },
-  modelstr: {
-    type: String
-  },
-  scalerstr: {
-    type: String
   }
 });
 

@@ -6,12 +6,12 @@
         <h4 class="card-title d-flex justify-content-between align-items-center" style="font-weight: bold">
           {{nombre}}
         </h4>
-        <a  style="margin-bottom: 20px;" href="/samples/view/{{_id}}" class="btn btn-success btn-block">Detalles</a>
+        <a  style="margin-bottom: 20px;" href="/models/view/{{_id}}" class="btn btn-success btn-block">Detalles</a>
         <!-- DELETE REQUEST -->
-        <form action="/samples/delete/{{_id}}?_method=DELETE" method="POST">
+        <form action="/mlmodels/delete/{{_id}}?_method=DELETE" method="POST">
           <input type="hidden" name="_method" value="DELETE">
           <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar</button>
-        </form>       
+        </form>         
       </div>
     </div>
   </div>

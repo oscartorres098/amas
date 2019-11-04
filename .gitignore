@@ -3,3 +3,4 @@ package-lock.json
 env/
 app/flaskAPI/__pycache__/app.cpython-37.pyc
 app/amas-app/docs
+app/amas-app/src/public/models
