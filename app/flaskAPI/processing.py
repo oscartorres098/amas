@@ -39,11 +39,11 @@ def transform_data(data, labels, scaler, preprocessing, derivable):
     elif (preprocessing == "dwt"):
         data, data_d = pywt.dwt(data, 'db1')
 
-    if ( derivable == "True" ):
+    if ( derivable = "True" ):
         d1 = np.diff(data)
         d2 = np.diff(data, n=2)
-        data = np.concatenate((data, d1), axis = 1)
-        data = np.concatenate((data, d2), axis = 1)
+        data = np.concatenate((data, d1))
+        data = np.concatenate((data, d2))
 
     return data, labels, labels_scaler
 
