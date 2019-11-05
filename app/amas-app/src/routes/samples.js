@@ -356,7 +356,6 @@ router.get('/samples/view/:id', isAuthenticated, async (req, res) => {
  */
 router.post("/samples/delete-estimation/:id/:index", isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
-  console.log(sample);
     sample.prediction.splice(req.params.index, 1);
     await Sample.findByIdAndUpdate(req.params.id, sample);
     req.flash("success_msg", "Estimación eliminda");
@@ -385,7 +384,6 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   var modelstr =fs.readFileSync('../amas-app/src/public/models/'+modelname+'.txt');
   var scalerstr = fs.readFileSync('../amas-app/src/public/models/'+modelname+'-scaler.txt');
   const scaler_typestr = model.scaler;
-  console.log(scaler_typestr);
   try {
     var options = {
       method: 'POST',
@@ -440,5 +438,59 @@ router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   await Sample.findByIdAndUpdate(req.params.id, sample);
   res.redirect("../../samples/view/"+req.params.id);
 });
+/**
+ * Lets save an estimation incoming from flask server.
+ * @name /sample/save-estimation/:id
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
+router.get('/sample/graph', isAuthenticated, async (req, res) => {
+  var samples = await Sample.find();
+  var matriz=[];
+  for (i=0; i<12; i++){
+    var arreglo = [];
+    for (j=0; j<samples.length; j++){
+      arreglo.push(samples[j].labels[i]);
+    }
+    matriz.push(arreglo)
+  }
+  elementos = ["MO.x",	"CO.x",	"Arena",	"Arcilla",	"Limo",	"CLASE_TEXTURAL",	"HUMEDAD_GRAVIMETRICA",	"Dr",	"pH",	"Ca",	"Mg",	"K",	"Na"]
+  try {
+    var options = {
+      method: 'POST',
+      uri: 'http://localhost:5000/api/graphs',
+      body: {
+        caracteristicas: matriz,
+        elementos: elementos,
+        tipo: "boxplot",
+      },
 
+      json: true,
+    };
+    try {
+      rp(options)
+        .then(async function (parsedBody) {
+          try {
+            imagen = image;
+            //console.log(estimacion)
+            res.render("samples/view-caract", imagen);
+          } catch (err) {
+            //console.log(err);
+          }
+        })
+        .catch(function (err) {
+          //console.log(err);
+        });
+    } catch (error) {
+      //console.log(error);
+    }
+  } catch (err) {
+    //console.log(err);
+  }
+  //res.render("samples/view-caract", imagen);
+});
 module.exports = router;

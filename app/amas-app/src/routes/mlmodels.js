@@ -165,13 +165,9 @@ router.delete('/mlmodels/delete/:id', isAuthenticated, async (req, res) => {
   var model = await MlModel.findById(req.params.id); 
   fs.unlink('../amas-app/src/public/models/'+model.nombre+".txt", function(err) {
     if (err) throw err;
-  
-    console.log('file deleted');
   });
   fs.unlink('../amas-app/src/public/models/'+model.nombre+"-scaler.txt", function(err) {
     if (err) throw err;
-  
-    console.log('file deleted');
   });
   //fs.unlinkSync('../amas-app/src/public/models/'+model.name+".txt");
   //fs.unlinkSync('../amas-app/src/public/models/'+model.nombre+"-scaler.txt");
