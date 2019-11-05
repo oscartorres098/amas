@@ -2,7 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const bcrypt = require('bcryptjs');
-
+/**
+ * @class RegistrolSchema
+ * @param {String} name -User name.
+ * @param {String} email - User email.
+ * @param {String} password - User password.
+ * @param {String} rol - user rol.
+ * @param {String} date - Date of creation.
+ */
 const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },

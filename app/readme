@@ -10,6 +10,8 @@ flask run
 pip install numpy
 pip install sklearn
 pip install pywt
+pip install pandas
+pip install matplotlib
 #to run flask api:
 #virtual env
 env\Scripts\activate

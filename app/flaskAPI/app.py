@@ -1,6 +1,8 @@
 import numpy as np
 from flask import Flask, abort, jsonify, request
 import pickle as pickle
+import pandas as pd
+import matplotlib.pyplot as plt
 import processing
 from processing import *
 import joblib
@@ -51,9 +53,9 @@ def make_predict(model):
         if ( data['transform_type'] == "fft" ):
             proc_data = np.fft.fft(escalado)
         elif ( data['transform_type'] == "dct" ):
-            proc_data =  dct(data)
+            proc_data =  dct(escalado)
         elif ( data['transform_type'] == "dwt" ):
-            proc_data, data_d = pywt.dwt(data, 'db1')
+            proc_data, data_d = pywt.dwt(escalado, 'db1')
 
         derivable = proc_data
         if ( data['derivable'] == "True" ):
@@ -140,4 +142,30 @@ def train_model(model, scaler, preprocessing, derivable):
         answer = {
             "Error": "Modelo no encontrado."
         }
+    return json.dumps(answer)
+@app.route('/api/graphs', methods=['POST'])
+def distribution_graphs():
+    request_content = request.get_json(force=True)
+    data = request_content['caracteristicas']
+    elementos = request_content['elementos']
+    tipo = request_content['tipo']
+    dataframe = pd.Dataframe(caracteristicas)
+    dataframe.columns = elementos
+    if ( tipo == "hist" ):
+        dataframe.hist(bins = 50, figsize=(20,15))
+    else:
+        plt.boxplot(dataframe, labels = elementos , notch=True)
+
+    image_path = 'images/distribution.png'
+    plt.savefig(image_path)
+    image_file = open( image_path, 'r')
+    answer = {
+        "image": str(base64.b64encode(image_file.read()), "utf-8")
+    }
+    image_file.close()
+    try:
+        os.remove(image_path)
+    except OSError as e: # name the Exception `e`
+        print ("Failed with:", e.strerror) # look what it says
+        #print ("Error code:", e.code)
     return json.dumps(answer)
