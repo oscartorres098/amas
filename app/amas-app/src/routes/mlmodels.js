@@ -145,7 +145,7 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
  * @param {function} isAuthenticated - auth helper
  * @param {callback} middleware - Express middleware.
  */
-router.get("/models/view-mode/:id", isAuthenticated, async (req, res) => {
+router.get("/models/view/:id", isAuthenticated, async (req, res) => {
   const model = await MlModel.findById(req.params.id);
   const view = "model";
   res.render("mlmodels/view-model", { model, view });

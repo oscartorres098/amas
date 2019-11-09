@@ -7,6 +7,7 @@ import processing
 from processing import *
 import joblib
 import json
+import base64
 from datetime import date
 from time import gmtime, strftime
 import base64
@@ -149,18 +150,22 @@ def distribution_graphs():
     data = request_content['caracteristicas']
     elementos = request_content['elementos']
     tipo = request_content['tipo']
-    dataframe = pd.Dataframe(caracteristicas)
+    dataframe = pd.DataFrame(data)
+    dataframe = dataframe.transpose()
     dataframe.columns = elementos
+    print( dataframe.shape, " --- ", len(elementos)  )
     if ( tipo == "hist" ):
         dataframe.hist(bins = 50, figsize=(20,15))
     else:
-        plt.boxplot(dataframe, labels = elementos , notch=True)
+        plt.boxplot(dataframe.transpose(), labels = elementos , notch=True)
+        plt.xticks(rotation=45)
 
     image_path = 'images/distribution.png'
     plt.savefig(image_path)
-    image_file = open( image_path, 'r')
+    image_file = open( image_path, 'rb')
     answer = {
-        "image": str(base64.b64encode(image_file.read()), "utf-8")
+        "image": str(base64.b64encode(image_file.read()), 'utf-8')
+        #"image": image_file.encode('base64')
     }
     image_file.close()
     try:

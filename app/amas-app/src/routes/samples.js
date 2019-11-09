@@ -451,14 +451,16 @@ router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
 router.get('/sample/graph', isAuthenticated, async (req, res) => {
   var samples = await Sample.find();
   var matriz=[];
-  for (i=0; i<12; i++){
+  for (i=0; i<13; i++){
     var arreglo = [];
     for (j=0; j<samples.length; j++){
-      arreglo.push(samples[j].labels[i]);
+        arreglo.push(samples[j].labels[i]);
     }
     matriz.push(arreglo)
   }
   elementos = ["MO.x",	"CO.x",	"Arena",	"Arcilla",	"Limo",	"CLASE_TEXTURAL",	"HUMEDAD_GRAVIMETRICA",	"Dr",	"pH",	"Ca",	"Mg",	"K",	"Na"]
+  console.log(elementos.length);
+  console.log(matriz.length);
   try {
     var options = {
       method: 'POST',
@@ -466,7 +468,7 @@ router.get('/sample/graph', isAuthenticated, async (req, res) => {
       body: {
         caracteristicas: matriz,
         elementos: elementos,
-        tipo: "boxplot",
+        tipo: "hist",
       },
 
       json: true,
@@ -475,18 +477,21 @@ router.get('/sample/graph', isAuthenticated, async (req, res) => {
       rp(options)
         .then(async function (parsedBody) {
           try {
-            imagen = image;
-            //console.log(estimacion)
-            res.render("samples/view-caract", imagen);
+            path="src/public/img/graph.png";
+            var base64Data = parsedBody.image;
+            require("fs").writeFile(path, base64Data, 'base64', function(err) {
+              console.log(err);
+            });
+            res.render("samples/labels-graph", {path});
           } catch (err) {
-            //console.log(err);
+            console.log(err);
           }
         })
         .catch(function (err) {
-          //console.log(err);
+          console.log(err);
         });
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     }
   } catch (err) {
     //console.log(err);
