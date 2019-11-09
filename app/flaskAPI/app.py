@@ -49,7 +49,9 @@ def make_predict(model):
             escalado = StandardScaler().fit(datat).transform(datat)
         elif ( data['scaler_type'] == "minmax" ):
             escalado = MinMaxScaler().fit(datat).transform(datat)
+
         print (data['scaler_type'])
+
         proc_data = escalado
         if ( data['transform_type'] == "fft" ):
             proc_data = np.fft.fft(escalado)
@@ -88,6 +90,7 @@ def train_model(model, scaler, preprocessing, derivable):
     request_content = request.get_json(force=True)
     data = request_content['espetro']
     labels = request_content['labels']
+    names = request_content['names']
     data = np.asarray(data)
     labels = np.asarray(labels)
     print(data)
@@ -109,7 +112,7 @@ def train_model(model, scaler, preprocessing, derivable):
         if (scaler == "standard"):
             is_std = 1
 
-        trained_model, mse, r2, cvs = processing.train_nmodel(data, labels, train_model, is_std)
+        trained_model, mse, r2, cvs, images = processing.train_nmodel(data, labels, train_model, is_std, names)
         today = strftime("%B-%d-%Y,%H:%M", gmtime())
 
         file_name = scaler + "_mor_" + today + "_"
@@ -129,7 +132,8 @@ def train_model(model, scaler, preprocessing, derivable):
             "cross_val_score" : cvs.tolist(),
             "model": str(base64.b64encode(model_file.read()), "utf-8"),
             "scaler": str(base64.b64encode(scaler_file.read()), "utf-8"),
-            "derivable": derivable
+            "derivable": derivable,
+            "images": images
         }
         model_file.close()
         scaler_file.close()

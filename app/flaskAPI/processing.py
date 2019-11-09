@@ -14,6 +14,23 @@ from scipy.fftpack import dct
 import joblib
 import math
 
+def create_graph(y_test, y_pred, name):
+  sns.regplot(x=y_test, y=y_pred, scatter_kws={"color": "black"}, line_kws={"color": "red"})
+  plt.plot(range(int(round(y_test.min())),round(y_test.max())), range(int(round(y_test.min())),int(round(y_test.max())))
+  plt.title(name)
+  plt.xlabel("Referencia")
+  plt.ylabel("Predichas")
+  image_path = 'images/perfomance.png'
+  plt.savefig(image_path)
+  image_file = open( image_path, 'r')
+  imagen_str = str(base64.b64encode(image_file.read()), "utf-8")
+  image_file.close()
+  try:
+      os.remove(image_path)
+  except OSError as e: # name the Exception `e`
+      print ("Failed with:", e.strerror) # look what it says
+
+  return imagen_str
 
 def normalize_ss(min_val, max_val, value):
     numerador = math.sqrt(value)
@@ -62,17 +79,20 @@ def get_metrics(y_test, y_pred, labels, is_std):
 
 
 
-def train_nmodel(data, labels, model, is_std):
+def train_nmodel(data, labels, model, is_std, names):
     x_train, x_test, y_train, y_test = train_test_split( data, labels, test_size = 0.25, random_state = 42 )
     mor = MultiOutputRegressor( model )
     mor.fit(x_train, y_train)
     y_pred = mor.predict(x_test)
     mse, r2 = get_metrics(y_test, y_pred, labels, is_std)
-    cvs = cross_val_score(mor, data, labels, cv=3, scoring='neg_mean_squared_error')
+    cvs = cross_val_score(mor, data, labels, cv=4, scoring='neg_mean_squared_error')
     print (y_pred)
     print (x_train)
+    images = []
+    for i in range (0, len(names)):
+        images.append(create_graph(y_test[i], y_pred[i], names[i] ))
 
-    return mor, mse, r2, cvs
+    return mor, mse, r2, cvs, images
 
 def predictDefault(data):
     mm_data = MinMaxScaler().fit(data).transform(data)
@@ -151,6 +171,5 @@ def predictDefault(data):
         row.append(ph_res[i][0])
         row.append(ca_res[i][0])
         output.append(row)
-    #output = np.concatenate((mo_res, co_res, arena_res, arcilla_res, hg_res, dr_res, ph_res, ca_res))
-    #output = output.transpose()
+
     return output
