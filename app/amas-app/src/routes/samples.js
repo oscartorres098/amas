@@ -1,5 +1,26 @@
+/** Express router providing user related routes
+ * @module routers/samples
+ * @requires express
+ */
+
+/**
+ * express module
+ * @const
+ */
 const express = require("express");
+/**
+ * Express router to mount samples related functions on.
+ * @type {object}
+ * @const
+ * @namespace samplesRouter
+ */
 const router = express.Router();
+/**
+ * Express proxy to comunicate with flask api.
+ * @type {object}
+ * @const
+ * @namespace samplesProxy
+ */
 var request = require('request');
 const fs=require('fs');
 const Sample = require("../models/Sample");
@@ -10,18 +31,45 @@ var rp = require('request-promise');
 // Helpers
 const { isAuthenticated } = require("../helpers/auth");
 const { isAdmin } = require("../helpers/auth");
- 
-//Get all samples
+/**
+ * Get all samples.
+ * @name get/samples
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get("/samples", isAuthenticated, async (req, res) => {
   const samples = await Sample.find();
   const view = "sample";
   res.render("samples/all-samples", { samples, view });
 });
-//Create new sample
+/**
+ * get add sample screen.
+ * @name /samples/add
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get("/samples/add", isAuthenticated, (req, res) => {
   var view = "sample";
   res.render("samples/new-sample", {view});
 });
+/**
+ * add a new sample.
+ * @name /samples/new-sample
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
   const { check, espectro, MOx,	COx,	Arena, Arcilla,	Limo,	CLASE_TEXTURAL,	HUMEDAD_GRAVIMETRICA,	Dr,	pH,	Ca,	Mg,	K,	Na, details } = req.body;
   const errors = [];
@@ -92,6 +140,16 @@ router.post("/samples/new-sample", isAuthenticated, async (req, res) => {
   }
 });
 //Create new samples form file
+/**
+ * Create new samples form file
+ * @name get/samples
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get("/samples/add-frfile", isAuthenticated, (req, res) => {
   var view = "sample";
   res.render("samples/new-sample-frfile", {view});
@@ -168,6 +226,16 @@ router.post("/samples/new-sample-frfile", isAuthenticated, async (req, res) => {
   }
 });
 // Edit Sample
+/**
+ * Load Edit Sample screen
+ * @name get/samples
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get("/samples/edit/:id", isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
   if (sample.user != req.user.id) {
@@ -177,7 +245,16 @@ router.get("/samples/edit/:id", isAuthenticated, async (req, res) => {
   var view = "sample";
   res.render("samples/edit-sample", { sample, view });
 });
-
+/**
+ * edit sample searching by id an getting changes from body
+ * @name get/samples
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
   const errors = [];
@@ -234,12 +311,32 @@ router.put("/samples/edit-sample/:id", isAuthenticated, async (req, res) => {
   }
 });
 // Delete Sample
+/**
+ * Delete Sample searching by id.
+ * @name /samples/delete/:id
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.delete('/samples/delete/:id', isAuthenticated, async (req, res) => {
   await Sample.findByIdAndDelete(req.params.id);
   req.flash('success_msg', 'Muestra eliminada correctamente');
   res.redirect('/samples');
 });
 // View Sample
+/**
+ * View Sample by sarching by id and loading screen
+ * @name /samples/view/:id
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.get('/samples/view/:id', isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
   const modelo = await MlModel.find();
@@ -247,15 +344,34 @@ router.get('/samples/view/:id', isAuthenticated, async (req, res) => {
   res.render("samples/view-sample", { sample, modelo, view });
 });
 //delete estimantion
+/**
+ * delete estimantion searching by id and estimation index
+ * @name /samples/delete-estimation/:id/:index
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.post("/samples/delete-estimation/:id/:index", isAuthenticated, async (req, res) => {
   const sample = await Sample.findById(req.params.id);
-  console.log(sample);
     sample.prediction.splice(req.params.index, 1);
     await Sample.findByIdAndUpdate(req.params.id, sample);
     req.flash("success_msg", "Estimación eliminda");
     res.redirect("/samples/view/"+req.params.id);
 });
 // Estimate sample
+/**
+ * Estimate sample calling flask api and using route 'http://localhost:5000/api/model'
+ * @name /sample/estimate/:id
+ * @function
+ * @memberof module:routers/samples~samplesProxy
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const sampleid=req.params.id;
   const modelid=req.body.modelo;
@@ -264,10 +380,10 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
   const espectro = [];
   espectro.push(sample.espectro[0].split(",").map(Number));
   const modelname = model.nombre;
+  const deriv = model.derivable;
   var modelstr =fs.readFileSync('../amas-app/src/public/models/'+modelname+'.txt');
   var scalerstr = fs.readFileSync('../amas-app/src/public/models/'+modelname+'-scaler.txt');
   const scaler_typestr = model.scaler;
-  console.log(scaler_typestr);
   try {
     var options = {
       method: 'POST',
@@ -278,7 +394,7 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
         scaler_type: scaler_typestr,
         espetro: espectro,
         transform_type: model.preprocessing,
-        derivable: "False"
+        derivable: deriv
       },
 
       json: true,
@@ -304,6 +420,16 @@ router.post('/sample/estimate/:id', isAuthenticated, async (req, res) => {
     //console.log(err);
   }
 });
+/**
+ * Lets save an estimation incoming from flask server.
+ * @name /sample/save-estimation/:id
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
 router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   var sample = await Sample.findById(req.params.id);
   var {estimacion, modelo, modelid} = req.body;
@@ -312,5 +438,59 @@ router.put('/sample/save-estimation/:id', isAuthenticated, async (req, res) => {
   await Sample.findByIdAndUpdate(req.params.id, sample);
   res.redirect("../../samples/view/"+req.params.id);
 });
+/**
+ * Lets save an estimation incoming from flask server.
+ * @name /sample/save-estimation/:id
+ * @function
+ * @memberof module:routers/samples~samplesRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {function} isAuthenticated - auth helper
+ * @param {callback} middleware - Express middleware.
+ */
+router.get('/sample/graph', isAuthenticated, async (req, res) => {
+  var samples = await Sample.find();
+  var matriz=[];
+  for (i=0; i<12; i++){
+    var arreglo = [];
+    for (j=0; j<samples.length; j++){
+      arreglo.push(samples[j].labels[i]);
+    }
+    matriz.push(arreglo)
+  }
+  elementos = ["MO.x",	"CO.x",	"Arena",	"Arcilla",	"Limo",	"CLASE_TEXTURAL",	"HUMEDAD_GRAVIMETRICA",	"Dr",	"pH",	"Ca",	"Mg",	"K",	"Na"]
+  try {
+    var options = {
+      method: 'POST',
+      uri: 'http://localhost:5000/api/graphs',
+      body: {
+        caracteristicas: matriz,
+        elementos: elementos,
+        tipo: "boxplot",
+      },
 
+      json: true,
+    };
+    try {
+      rp(options)
+        .then(async function (parsedBody) {
+          try {
+            imagen = image;
+            //console.log(estimacion)
+            res.render("samples/view-caract", imagen);
+          } catch (err) {
+            //console.log(err);
+          }
+        })
+        .catch(function (err) {
+          //console.log(err);
+        });
+    } catch (error) {
+      //console.log(error);
+    }
+  } catch (err) {
+    //console.log(err);
+  }
+  //res.render("samples/view-caract", imagen);
+});
 module.exports = router;
