@@ -2,6 +2,9 @@ import numpy as np
 import pywt
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
+import base64
+import seaborn as sns
 from sklearn.multioutput import MultiOutputRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
@@ -16,20 +19,21 @@ import math
 
 def create_graph(y_test, y_pred, name):
   sns.regplot(x=y_test, y=y_pred, scatter_kws={"color": "black"}, line_kws={"color": "red"})
-  plt.plot(range(int(round(y_test.min())),round(y_test.max())), range(int(round(y_test.min())),int(round(y_test.max())))
+  plt.plot(range(int(round(y_test.min())),int(round(y_test.max()+1))), range(int(round(y_test.min())),int(round(y_test.max()+1))))
   plt.title(name)
   plt.xlabel("Referencia")
   plt.ylabel("Predichas")
   image_path = 'images/perfomance.png'
+  plt.show()
   plt.savefig(image_path)
-  image_file = open( image_path, 'r')
+  image_file = open( image_path, 'rb')
   imagen_str = str(base64.b64encode(image_file.read()), "utf-8")
   image_file.close()
-  try:
-      os.remove(image_path)
-  except OSError as e: # name the Exception `e`
-      print ("Failed with:", e.strerror) # look what it says
-
+  #try:
+      #os.remove(image_path)
+  #except OSError as e: # name the Exception `e`
+      #print ("Failed with:", e.strerror) # look what it says
+  print ( len(imagen_str))
   return imagen_str
 
 def normalize_ss(min_val, max_val, value):

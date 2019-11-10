@@ -73,6 +73,7 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
       etiquetas.push(samples[i].labels.toString().split(',').map(Number));
     }
   }
+  elementos = ["MO.x",	"CO.x",	"Arena",	"Arcilla",	"Limo",	"CLASE_TEXTURAL",	"HUMEDAD_GRAVIMETRICA",	"Dr",	"pH",	"Ca",	"Mg",	"K",	"Na"]
   mlModel.model = model;
   mlModel.scaler = scaler;
   mlModel.preprocessing = preprocessing;
@@ -90,6 +91,7 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
       uri: 'http://localhost:5000/api/train/' + model + '/' + scaler + '/' + preprocessing + '/' + derivable,
       body: {
         espetro: spectres,
+        names: elementos,
         labels: etiquetas
       },
 
@@ -99,16 +101,18 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
       rp(options)
         .then(async function (parsedBody) {
           try {
-            //const iMid = await LastInsert.findById("5d93f1b3a6f4271c900849c0");
-            const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
+            const iMid = await LastInsert.findById("5d93f1b3a6f4271c900849c0");
+            //const iMid = await LastInsert.findById("5d926b4fc84df231a87609dc");
             mid = iMid.model;
             iMid.sample = parseInt(mid)+1;
-            await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
-            //await LastInsert.findByIdAndUpdate("5d93f1b3a6f4271c900849c0", iMid);
+            //await LastInsert.findByIdAndUpdate("5d926b4fc84df231a87609dc", iMid);
+            await LastInsert.findByIdAndUpdate("5d93f1b3a6f4271c900849c0", iMid);
             mlModel.nombre = name+"-"+scaler+"-"+model+"-"+preprocessing+"-"+mid;
             mlModel.name = parsedBody.file_name;
             mlModel.mse = parsedBody.mse;
             mlModel.rr = parsedBody.r2;
+            console.log(parsedBody.images)
+            mlModel.imagenes = parsedBody.images;
             mlModel.cross_val_score = parsedBody.cross_val_score;
             fs.writeFile('../amas-app/src/public/models/'+mlModel.nombre+'.txt', parsedBody.model, error => {
               if (error)
@@ -147,6 +151,12 @@ router.post("/models/new-model", isAuthenticated, async (req, res) => {
  */
 router.get("/models/view/:id", isAuthenticated, async (req, res) => {
   const model = await MlModel.findById(req.params.id);
+  for (i=0; i<model.imagenes.length; i++){
+    path="src/public/img/graph"+i+".png";
+    require("fs").writeFile(path, model.imagenes[i], 'base64', function(err) {
+      console.log(err);
+    });
+  }
   const view = "model";
   res.render("mlmodels/view-model", { model, view });
 });

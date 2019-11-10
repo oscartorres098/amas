@@ -52,7 +52,10 @@ const MlModelSchema = new Schema({
   user: {
     type: String,
     required: true
-  }
+  },
+  imagenes: [{
+    type: String
+  }]
 });
 
 module.exports = mongoose.model("MlModel", MlModelSchema);
